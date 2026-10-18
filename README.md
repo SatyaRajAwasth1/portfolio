@@ -1,47 +1,79 @@
-# Astro Starter Kit: Minimal
+# satyarajawasthi.com.np
+
+Personal site: writing, research and projects. Built with Astro, Tailwind and MDX.
 
 ```sh
-yarn create astro@latest -- --template minimal
+yarn install
+yarn dev        # http://localhost:4321
+yarn build      # static site in ./dist
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+## Where things live
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+| What | File |
+|---|---|
+| Bio, roles, links, "now", experience, education, interests | `src/site.config.ts` |
+| Posts | `src/content/blog/<slug>.mdx` |
+| Projects (case studies) | `src/content/projects/<slug>.mdx` |
+| Log of talks, events, milestones | `src/data/activities.json` |
+| Colors and fonts (light and dark) | `src/styles/global.css` (top of file) |
+| Post types (formats) and statuses | `src/lib/taxonomy.ts` |
 
-## 🚀 Project Structure
+## Adding content
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```sh
+yarn new post "Title of the post"
+yarn new post "Raft, read closely" --format deep-dives
+yarn new project "SwiftCache"
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+New files start with `draft: true`: they show in `yarn dev` but not in the production build.
+Remove the line to publish.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+### Post frontmatter
 
-Any static assets, like images, can be placed in the `public/` directory.
+```yaml
+title: "..."
+description: "..."            # shown under the title and in link previews
+date: "2026-10-18"
+updated: "2026-11-02"         # optional
+format: "deep-dives"          # engineering-diaries | deep-dives | reviews-opinions | quick-overviews | best-practices | research-notes
+status: "evolving"            # optional: draft | evolving | evergreen
+tags: ["distributed-systems"]
+featured: true                # optional: pin to the home page
+showTOC: true                 # optional: defaults to on when a post has 3+ headings
+```
 
-## 🧞 Commands
+Every post has one format (its type, shown highlighted in listings) and any number of tags (its subjects).
+Add a new format in `src/lib/taxonomy.ts`.
 
-All commands are run from the root of the project, from a terminal:
+`deep-dives`, `research-notes` and `quick-overviews` posts get the research header: status, updated date, and a
+"Cite this" block with BibTeX. The other formats get a lighter header.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `yarn install`             | Installs dependencies                            |
-| `yarn dev`             | Starts local dev server at `localhost:4321`      |
-| `yarn build`           | Build your production site to `./dist/`          |
-| `yarn preview`         | Preview your build locally, before deploying     |
-| `yarn astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `yarn astro -- --help` | Get help using the Astro CLI                     |
+### Project frontmatter
 
-## 👀 Want to learn more?
+```yaml
+title: "SwiftCache"
+summary: "One line on what it is."
+date: "2025-12-01"
+area: "Storage systems"
+type: "engineering"           # engineering | research | open-source
+role: "Final-year major project"
+stack: ["Go", "Redis protocol"]
+tags: ["distributed-systems"]
+links:
+  repo: "https://github.com/you/swiftcache"   # shown as the Source link; "Not public yet" when missing
+  paper: "https://..."                        # optional
+  demo: "https://..."                         # optional
+```
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Components available in every post
+
+```mdx
+<Callout type="info|warning|error|success" title="Optional">Text</Callout>
+<Note>Text</Note>
+<Quote author="Leslie Lamport">A distributed system is one in which ...</Quote>
+<Figure src="/images/x.png" alt="..." caption="..." number={1} />
+<Sidenote>Shown in small type below the line it annotates.</Sidenote>
+<References items={[{ label: "Lamport, L. Time, Clocks ... 1978.", href: "https://..." }]} />
+```
