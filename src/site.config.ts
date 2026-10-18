@@ -54,9 +54,9 @@ export const site = {
   // after enabling Discussions on the repo and installing the Giscus app. Leave empty to hide comments.
   giscus: {
     repo: "SatyaRajAwasth1/portfolio",
-    repoId: "",
-    category: "",
-    categoryId: "",
+    repoId: "MDEwOlJlcG9zaXRvcnkzOTUyOTAwOTc=",
+    category: "Announcements",
+    categoryId: "DIC_kwDOF4-l8c4DI6DB",
   },
 
   // Set these to a file in /public (e.g. "/cv/industry.pdf") to show download links on /about.
