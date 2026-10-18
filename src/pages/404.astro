@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+---
+
+<BaseLayout title="Page not found">
+  <div class="pt-10 pb-4 sm:pt-14">
+    <PageHeader breadcrumbs={[{ label: "Page not found" }]} title="Page not found">
+      <p class="mt-2 text-ink-2">
+        It may have moved during the site redesign. Try <a class="link" href="/writing">writing</a>,
+        <a class="link" href="/projects">projects</a>, or the <a class="link" href="/">home page</a>.
+      </p>
+    </PageHeader>
+  </div>
+</BaseLayout>

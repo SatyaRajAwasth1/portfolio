@@ -1,0 +1,43 @@
+---
+// Two-column introduction: text on the left, photo on the right. Used on the home and about pages.
+import { site } from "../site.config";
+import { inlineLinks } from "../lib/content";
+import SocialLinks from "./SocialLinks.astro";
+
+interface Props {
+  // Show the "More about me" button (hidden on the about page itself).
+  aboutLink?: boolean;
+}
+
+const { aboutLink = true } = Astro.props;
+---
+
+<section class="grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_15rem] md:gap-14 lg:grid-cols-[minmax(0,1fr)_18rem]" aria-label="Introduction">
+  <img
+    src={site.avatar}
+    alt={`Photo of ${site.name}`}
+    width="288"
+    height="288"
+    class="aspect-square w-28 rounded-2xl border border-rule object-cover md:order-last md:w-full"
+  />
+  <div class="min-w-0">
+    <h1 class="text-3xl font-semibold tracking-[-0.025em] sm:text-[2.5rem]">Hello, I am Satya</h1>
+    <div class="mt-5 grid max-w-[42rem] gap-3.5 text-[1.0625rem] leading-relaxed text-ink-2">
+      {
+        site.intro.map((paragraph) => (
+          <p>{inlineLinks(paragraph).map((part) => (part.href ? <a class="link" href={part.href} target="_blank" rel="noopener">{part.text}</a> : part.text))}</p>
+        ))
+      }
+    </div>
+    <div class="mt-7 flex flex-wrap items-center gap-2 text-sm">
+      {
+        aboutLink ? (
+          <a href="/about" class="rounded-md bg-ink px-3.5 py-2 font-medium text-paper transition-opacity hover:opacity-85">More about me</a>
+        ) : (
+          <a href={`mailto:${site.email}`} class="rounded-md bg-ink px-3.5 py-2 font-medium text-paper transition-opacity hover:opacity-85">Email me</a>
+        )
+      }
+      <SocialLinks only={aboutLink ? ["github", "linkedin", "email"] : ["github", "linkedin"]} />
+    </div>
+  </div>
+</section>

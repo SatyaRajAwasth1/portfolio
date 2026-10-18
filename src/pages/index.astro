@@ -1,190 +1,31 @@
 ---
-import "../styles/global.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
+import Hero from "../components/Hero.astro";
+import Section from "../components/Section.astro";
+import PostList from "../components/PostList.astro";
+import ProjectList from "../components/ProjectList.astro";
+import { getPosts, getProjects, pickFeatured } from "../lib/content";
 
-const allPosts = await getCollection("blog");
-const blogs = allPosts
-  .sort(
-    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
-  )
-  .slice(0, 5)
-  .map((post) => ({
-    date: new Date(post.data.date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }),
-    title: post.data.title,
-    url: `/blogs/${post.slug}`,
-  }));
+const posts = pickFeatured(await getPosts(), 5);
+// This section can later be switched to papers or publications.
+const projects = pickFeatured(await getProjects(), 3);
 
-import activities from "../data/activities.json";
-
-const recentActivities = [...activities]
-  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  .slice(0, 5);
 ---
 
-<BaseLayout title="Satya Raj Awasthi">
-  <!-- Hero Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 items-start gap-12 py-16">
-    <!-- Text Column -->
-    <section class="md:col-span-2">
-      <h1 class="text-5xl font-bold text-gray-900 leading-tight tracking-tight">
-        Hello, I’m Satya
-      </h1>
-      <p class="mt-6 text-lg text-gray-700 leading-relaxed max-w-2xl">
-        I'm a <span class="font-semibold text-indigo-600"
-          >Software Engineer</span
-        > by profession and to be by academia — passionate about Programming Systems,
-        Distributed Systems, System Architecture, Open Source, and Tech Communities.
-      </p>
-      <p class="mt-4 text-md text-gray-600 max-w-2xl">
-        Currently working at <strong class="text-green-600">eSewa</strong> as a Software
-        Engineer. If I'm not active on social media, I'm likely with my favorite communities
-        like
-        <a
-          class="text-green-700 hover:underline"
-          href="https://nosk.org.np"
-          target="_blank"
-        >
-          NOSK</a
-        >,
-        <a
-          class="text-blue-900 hover:underline ml-1"
-          href="https://tekcommunity.ncit.edu.np"
-          target="_blank">Nepal Tek Community</a
-        >, supporting events as a
-        <a
-          class="text-red-700 hover:underline ml-1"
-          href="https://githubcampus.expert/SatyaRajAwasth1/"
-          target="_blank">GitHub Campus Expert</a
-        >, or busy writing some code.
-      </p>
-    </section>
+<BaseLayout>
+  <div class="grid gap-20 pt-14 pb-4 sm:pt-20">
+    <Hero />
 
-    <!-- Image Column -->
-    <section class="flex flex-col items-center space-y-4">
-      <img
-        src="https://avatars.githubusercontent.com/u/77236280?v=4"
-        alt="Satya Raj Awasthi's Picture"
-        class="rounded-2xl border border-gray-300 w-64 h-64 object-cover shadow-xl transition-transform hover:scale-105 duration-300"
-      />
-    </section>
+    <Section title="Writing" more={{ label: "All writing", href: "/writing" }}>
+      <PostList posts={posts} />
+    </Section>
+
+    {
+      projects.length > 0 && (
+        <Section title="Projects" more={{ label: "All projects", href: "/projects" }}>
+          <ProjectList projects={projects} />
+        </Section>
+      )
+    }
   </div>
-
-  <!-- Blog & Activities Section -->
-  <section class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-12">
-    <!-- Blogs List -->
-    <div>
-      <div class="flex items-center justify-between mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 tracking-tight">
-          Recent Blogs
-        </h2>
-        <a
-          href="/blogs"
-          class="text-indigo-600 hover:text-indigo-800 font-bold text-sm flex items-center gap-1 group"
-        >
-          View All
-          <svg
-            class="w-4 h-4 transition-transform group-hover:translate-x-1"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-          </svg>
-        </a>
-      </div>
-
-      <p class="mb-10 text-lg text-gray-600 leading-relaxed italic">
-        "Learning and forgetting is natural. Sharing is how we bridge the gap."
-      </p>
-
-      <ul class="space-y-8">
-        {
-          blogs.slice(0, 5).map((blog) => (
-            <li class="group relative">
-              <div class="flex flex-col gap-1">
-                <time class="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                  {blog.date}
-                </time>
-                <a
-                  href={blog.url}
-                  class="text-xl font-bold text-gray-800 group-hover:text-indigo-600 transition-colors duration-200"
-                >
-                  {blog.title}
-                </a>
-              </div>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-
-    <!-- Recent Activities Sidebar -->
-    <aside
-      class="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm h-fit"
-    >
-      <h3 class="text-xl font-bold text-gray-800 mb-4">Recent Activities</h3>
-      <div class="border-b border-gray-300 mb-4"></div>
-      <!-- Horizontal line -->
-      <ul class="space-y-4">
-        {
-          recentActivities.map((activity) => (
-            <li class="flex gap-3 text-sm leading-relaxed group">
-              <span class="text-green-600 font-bold shrink-0 mt-1">▹</span>
-              <div class="flex flex-col">
-                <span class="text-gray-700">
-                  {activity.title}
-                  {activity.event && (
-                    <span class="text-gray-400 font-medium">
-                      {" "}
-                      @ {activity.event}
-                    </span>
-                  )}
-                </span>
-                {activity.link && (
-                  <a
-                    href={activity.link}
-                    target="_blank"
-                    class="text-indigo-600 font-bold text-xs mt-1 hover:underline"
-                  >
-                    Learn More →
-                  </a>
-                )}
-              </div>
-            </li>
-          ))
-        }
-      </ul>
-      <!-- See All Activities Link -->
-      <div class="mt-8 text-right border-t border-gray-100 pt-4">
-        <a
-          href="/activities"
-          class="text-green-700 hover:text-green-900 font-bold flex items-center justify-end group text-sm"
-        >
-          See All Activities
-          <svg
-            class="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
-          </svg>
-        </a>
-      </div>
-    </aside>
-  </section>
 </BaseLayout>

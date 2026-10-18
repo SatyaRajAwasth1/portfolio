@@ -2,22 +2,21 @@
 type CalloutType = "info" | "warning" | "error" | "success";
 const { type = "info", title } = Astro.props as { type?: CalloutType; title?: string };
 
-const colors = {
-  info: "bg-blue-50 border-blue-400 text-blue-900",
-  warning: "bg-yellow-50 border-yellow-400 text-yellow-900",
-  error: "bg-red-50 border-red-400 text-red-900",
-  success: "bg-green-50 border-green-400 text-green-900",
+const tone = {
+  info: "border-accent",
+  warning: "border-warn",
+  error: "border-danger",
+  success: "border-ok",
 };
-const colorClass = colors[type as CalloutType] || colors.info;
+const labels = { info: "Note", warning: "Warning", error: "Caution", success: "Tip" };
 ---
 
 <aside
-  class={`border-l-4 p-4 rounded-xl shadow-sm mb-6 ${colorClass} font-sans`}
-  role="region"
-  aria-label={title || type}
+  class={`not-prose my-7 border-l-2 ${tone[type] ?? tone.info} bg-paper-2 px-4 py-3.5 font-sans`}
+  aria-label={title || labels[type]}
 >
-  {title && <h4 class="font-semibold mb-2">{title}</h4>}
-  <div class="text-sm leading-relaxed">
+  <p class="eyebrow mb-1.5">{title || labels[type]}</p>
+  <div class="text-[0.9375rem] leading-relaxed text-ink [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-2 [&_p+p]:mt-2">
     <slot />
   </div>
 </aside>

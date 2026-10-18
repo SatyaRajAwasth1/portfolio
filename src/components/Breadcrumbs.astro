@@ -1,58 +1,26 @@
 ---
+// Home / Writing / Deep Dives. Items without an href (the current page) are not links.
 interface Props {
-    items: {
-        label: string;
-        href?: string;
-    }[];
+  items: { label: string; href?: string }[];
 }
 
 const { items } = Astro.props;
+const trail = [{ label: "Home", href: "/" }, ...items];
 ---
 
-<nav aria-label="Breadcrumb" class="mb-8">
-    <ol
-        class="flex flex-wrap items-center gap-2 text-sm text-gray-500 font-medium"
-    >
-        <li class="flex items-center">
-            <a
-                href="/"
-                class="hover:text-indigo-600 transition-colors duration-200"
-            >
-                Home
-            </a>
+<nav aria-label="Breadcrumb" data-pagefind-ignore>
+  <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-3">
+    {
+      trail.map((item, i) => (
+        <li class="flex items-center gap-2">
+          {i > 0 && <span class="text-ink-3/60" aria-hidden="true">/</span>}
+          {item.href ? (
+            <a href={item.href} class="transition-colors hover:text-ink">{item.label}</a>
+          ) : (
+            <span class="text-ink-2" aria-current="page">{item.label}</span>
+          )}
         </li>
-
-        {
-            items.map((item, index) => (
-                <li class="flex items-center">
-                    <svg
-                        class="w-4 h-4 text-gray-400 mx-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 5l7 7-7 7"
-                        />
-                    </svg>
-                    {item.href ? (
-                        <a
-                            href={item.href}
-                            class="hover:text-indigo-600 transition-colors duration-200"
-                        >
-                            {item.label}
-                        </a>
-                    ) : (
-                        <span class="text-gray-900 truncate max-w-[200px] sm:max-w-md">
-                            {item.label}
-                        </span>
-                    )}
-                </li>
-            ))
-        }
-    </ol>
+      ))
+    }
+  </ol>
 </nav>

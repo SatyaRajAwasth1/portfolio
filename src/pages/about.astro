@@ -1,0 +1,91 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import Section from "../components/Section.astro";
+import Icon from "../components/Icon.astro";
+import { site } from "../site.config";
+import { formatDate } from "../lib/content";
+
+const span = (start: string, end: string) => {
+  const s = start ? (start.length === 4 ? start : formatDate(start, "month")) : "";
+  const e = end ? (end.length === 4 ? end : formatDate(end, "month")) : "Present";
+  return s ? `${s} - ${e}` : e;
+};
+---
+
+<BaseLayout title="About" description={`About ${site.name}: experience, education, community work, and contact.`}>
+  <div class="grid gap-20 pt-14 pb-4 sm:pt-20">
+    <Hero aboutLink={false} />
+
+    <div class="grid gap-14">
+      <Section title="Experience">
+        <ul class="grid gap-5">
+          {
+            site.experience.map((job) => (
+              <li class="grid gap-x-6 gap-y-0.5 sm:grid-cols-[9rem_minmax(0,1fr)]">
+                <span class="text-sm text-ink-3 tabular-nums sm:pt-0.5">{span(job.start, job.end)}</span>
+                <div>
+                  <p class="font-medium">
+                    {job.role},{" "}
+                    {job.href ? <a class="link" href={job.href} target="_blank" rel="noopener">{job.org}</a> : job.org}
+                  </p>
+                  {job.note && <p class="mt-0.5 text-[0.9375rem] text-ink-2">{job.note}</p>}
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </Section>
+
+      <Section title="Education">
+        <ul class="grid gap-5">
+          {
+            site.education.map((ed) => (
+              <li class="grid gap-x-6 gap-y-0.5 sm:grid-cols-[9rem_minmax(0,1fr)]">
+                <span class="text-sm text-ink-3 tabular-nums sm:pt-0.5">{span(ed.start, ed.end)}</span>
+                <div>
+                  <p class="font-medium">{ed.degree}</p>
+                  <p class="mt-0.5 text-[0.9375rem] text-ink-2">
+                    {ed.href ? <a class="link" href={ed.href} target="_blank" rel="noopener">{ed.org}</a> : ed.org}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </Section>
+
+      <Section title="Community">
+        <ul class="grid gap-2">
+          {
+            site.community.map((c) => (
+              <li>
+                <a class="link" href={c.href} target="_blank" rel="noopener">{c.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+        <a href="/log" class="group mt-6 inline-flex items-center gap-1.5 text-[0.9375rem] text-ink-2 transition-colors hover:text-ink">
+          See my talks, events, and other activities
+          <Icon name="arrow-right" class="text-ink-3 transition-transform group-hover:translate-x-0.5" />
+        </a>
+      </Section>
+
+      <Section title="Resume" id="cv">
+        {
+          site.cv.industry || site.cv.academic ? (
+            <div class="flex flex-wrap gap-2 text-sm">
+              {site.cv.industry && <a class="rounded-md border border-rule px-3.5 py-2 font-medium hover:bg-paper-2" href={site.cv.industry}>Resume (PDF)</a>}
+              {site.cv.academic && <a class="rounded-md border border-rule px-3.5 py-2 font-medium hover:bg-paper-2" href={site.cv.academic}>Academic CV (PDF)</a>}
+            </div>
+          ) : (
+            <p class="text-ink-2">
+              A current resume or academic CV is available on request at
+              <a class="link" href={`mailto:${site.email}`}>{site.email}</a>.
+            </p>
+          )
+        }
+      </Section>
+    </div>
+  </div>
+</BaseLayout>

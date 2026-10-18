@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Section from "../components/Section.astro";
+import Icon from "../components/Icon.astro";
+import { formatDate } from "../lib/content";
+import activities from "../data/activities.json";
+
+type Activity = { title: string; event?: string; role?: string; link?: string; date: string };
+
+const sorted = ([...activities] as Activity[]).sort((a, b) => b.date.localeCompare(a.date));
+const years = [...new Set(sorted.map((a) => a.date.slice(0, 4)))];
+---
+
+<BaseLayout title="Log" description="Milestones, talks, community work, and other highlights, newest first.">
+  <div class="grid gap-12 pt-10 pb-4 sm:pt-14">
+    <PageHeader breadcrumbs={[{ label: "About", href: "/about" }, { label: "Log" }]} title="Log" description="Milestones, talks, community work, and other highlights, newest first." />
+
+    {
+      years.map((year) => (
+        <Section title={year}>
+          <ul class="grid gap-5">
+            {sorted
+              .filter((a) => a.date.startsWith(year))
+              .map((a) => (
+                <li class="grid gap-x-6 gap-y-0.5 sm:grid-cols-[5rem_minmax(0,1fr)]">
+                  <time datetime={a.date} class="text-sm text-ink-3 tabular-nums sm:pt-0.5">
+                    {formatDate(a.date).replace(/, \d{4}$/, "")}
+                  </time>
+                  <div>
+                    <p class="font-medium leading-snug">
+                      {a.link ? <a class="hover:text-accent" href={a.link} target="_blank" rel="noopener">{a.title}<Icon name="external" class="ml-1 text-ink-3" /></a> : a.title}
+                    </p>
+                    {(a.event || a.role) && (
+                      <p class="mt-0.5 text-[0.9375rem] text-ink-2">
+                        {[a.event, a.role].filter(Boolean).join(", ")}
+                      </p>
+                    )}
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </Section>
+      ))
+    }
+  </div>
+</BaseLayout>

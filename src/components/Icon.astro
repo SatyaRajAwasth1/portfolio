@@ -1,0 +1,27 @@
+---
+// Small inline icons, used instead of arrow and bullet characters.
+interface Props {
+  name: "arrow-right" | "arrow-left" | "external";
+  class?: string;
+}
+
+const { name, class: className = "" } = Astro.props;
+const paths = {
+  "arrow-right": "M5 12h14M13 6l6 6-6 6",
+  "arrow-left": "M19 12H5M11 6l-6 6 6 6",
+  external: "M7 17 17 7M9 7h8v8",
+};
+---
+
+<svg
+  class={`inline-block size-[1em] shrink-0 align-[-0.125em] ${className}`}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  <path d={paths[name]} />
+</svg>

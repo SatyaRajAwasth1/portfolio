@@ -1,8 +1,22 @@
 ---
-const { src, alt = "", caption = "" } = Astro.props;
+const { src, alt = "", caption = "", number } = Astro.props as {
+  src: string;
+  alt?: string;
+  caption?: string;
+  number?: number | string;
+};
 ---
 
-<figure class="my-6 text-center">
-  <img src={src} alt={alt} class="mx-auto rounded shadow-md" />
-  {caption && <figcaption class="mt-2 text-sm text-gray-500 dark:text-gray-400">{caption}</figcaption>}
+<figure class="not-prose my-9">
+  <div class="overflow-hidden rounded-[3px] border border-rule bg-paper-2">
+    <img src={src} alt={alt} loading="lazy" class="mx-auto block max-w-full" />
+  </div>
+  {
+    (caption || number) && (
+      <figcaption class="mt-2.5 font-sans text-xs text-ink-3">
+        {number && <b class="mr-1.5 font-mono font-medium text-ink-2">Fig. {number}</b>}
+        {caption}
+      </figcaption>
+    )
+  }
 </figure>

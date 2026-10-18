@@ -1,24 +1,262 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Prose tweaks for better headings and code readability */
+/*
+  Design tokens. Plain and modern: white page, one blue accent, a sans for the
+  interface and a serif only for long-form reading. Every color flips for dark mode.
+*/
 :root {
-  --header-offset: 6rem;
+  --paper: #ffffff;
+  --paper-2: #f5f6f8;
+  --ink: #111318;
+  --ink-2: #4b5160;
+  --ink-3: #737a8a;
+  --rule: #e6e8ec;
+  --accent: #2456d3;
+  --accent-soft: #eef2fd;
+  --ok: #1f7a4d;
+  --warn: #9a5800;
+  --danger: #c0362c;
+  --header-offset: 5rem;
+  color-scheme: light;
 }
 
-.prose :where(h1,h2,h3,h4)[id] {
+:root[data-theme="dark"] {
+  --paper: #0f1115;
+  --paper-2: #171a20;
+  --ink: #eceef2;
+  --ink-2: #b0b6c3;
+  --ink-3: #868d9c;
+  --rule: #262a33;
+  --accent: #8fb0ff;
+  --accent-soft: #1a2440;
+  --ok: #5fc28f;
+  --warn: #e2a54a;
+  --danger: #f08b80;
+  color-scheme: dark;
+}
+
+/* Fallback when JavaScript is off: follow the OS setting. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+  --paper: #0f1115;
+  --paper-2: #171a20;
+  --ink: #eceef2;
+  --ink-2: #b0b6c3;
+  --ink-3: #868d9c;
+  --rule: #262a33;
+  --accent: #8fb0ff;
+  --accent-soft: #1a2440;
+  --ok: #5fc28f;
+  --warn: #e2a54a;
+  --danger: #f08b80;
+    color-scheme: dark;
+  }
+}
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+
+  --font-serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Geist", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+@layer base {
+  html {
+    background: var(--paper);
+  }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  ::selection {
+    background: var(--accent-soft);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/* Inline links in UI text. */
+.link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.15s ease;
+}
+.link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* Small label above titles and section names. */
+.eyebrow {
+  @apply text-[0.8125rem] font-medium text-ink-3;
+}
+
+/* ---------- Article prose ---------- */
+.prose-post {
+  --tw-prose-body: var(--ink);
+  --tw-prose-headings: var(--ink);
+  --tw-prose-lead: var(--ink-2);
+  --tw-prose-links: var(--accent);
+  --tw-prose-bold: var(--ink);
+  --tw-prose-counters: var(--ink-3);
+  --tw-prose-bullets: var(--ink-3);
+  --tw-prose-hr: var(--rule);
+  --tw-prose-quotes: var(--ink-2);
+  --tw-prose-quote-borders: var(--rule);
+  --tw-prose-captions: var(--ink-3);
+  --tw-prose-code: var(--ink);
+  --tw-prose-pre-code: var(--ink);
+  --tw-prose-pre-bg: var(--paper-2);
+  --tw-prose-th-borders: var(--rule);
+  --tw-prose-td-borders: var(--rule);
+  @apply font-serif max-w-none;
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+@media (max-width: 640px) {
+  .prose-post {
+    font-size: 1.0625rem;
+  }
+}
+.prose-post :where(h1, h2, h3, h4):not(:where(.not-prose, .not-prose *)) {
+  @apply font-sans;
+  letter-spacing: -0.005em;
   scroll-margin-top: var(--header-offset);
 }
-
-.prose pre code {
-  background: transparent;
+.prose-post :where(h1):not(:where(.not-prose, .not-prose *)) {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.prose-post :where(h2):not(:where(.not-prose, .not-prose *)) {
+  font-size: 1.375rem;
+  font-weight: 600;
+  margin-top: 2.2em;
+}
+.prose-post :where(h3):not(:where(.not-prose, .not-prose *)) {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.prose-post :where(a):not(:where(.not-prose, .not-prose *)) {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  font-weight: inherit;
+}
+.prose-post :where(a):not(:where(.not-prose, .not-prose *)):hover {
+  text-decoration-color: var(--accent);
+}
+.prose-post :where(code):not(:where(pre code)) {
+  @apply font-mono rounded-[3px] border border-rule bg-paper-2 px-1 py-px;
+  font-size: 0.82em;
+  font-weight: 400;
+}
+.prose-post :where(code):not(:where(pre code))::before,
+.prose-post :where(code):not(:where(pre code))::after {
+  content: none;
+}
+.prose-post :where(pre) {
+  @apply font-mono rounded-[3px] border border-rule;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+.prose-post :where(blockquote):not(:where(.not-prose, .not-prose *)) {
+  font-style: normal;
+  font-weight: 400;
+}
+.prose-post :where(img):not(:where(.not-prose, .not-prose *)) {
+  border-radius: 3px;
+}
+.prose-post :where(table):not(:where(.not-prose, .not-prose *)) {
+  @apply font-sans text-sm;
 }
 
-.prose code:not(pre code) {
-  @apply bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 text-gray-800 dark:text-gray-100;
+/* Shiki: Astro renders both themes; pick the one matching the page. */
+.astro-code {
+  background-color: var(--paper-2) !important;
+}
+[data-theme="dark"] .astro-code,
+[data-theme="dark"] .astro-code span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
 }
 
-/* Match body text tone with other pages (not pure black/white) */
-.prose p, .prose li, .prose td, .prose th {
-  @apply text-gray-700 dark:text-gray-700;
+/* ---------- Side notes (shown below the line they annotate) ---------- */
+.prose-post {
+  counter-reset: sidenote;
+}
+.sidenote-ref {
+  counter-increment: sidenote;
+}
+.sidenote-ref::after {
+  content: counter(sidenote);
+  @apply font-mono text-accent;
+  font-size: 0.68em;
+  vertical-align: super;
+  padding-left: 1px;
+}
+.sidenote {
+  @apply font-sans text-xs text-ink-2;
+  display: block;
+  line-height: 1.55;
+  margin: 0.4em 0 1em;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--rule);
+}
+.sidenote::before {
+  content: counter(sidenote) ". ";
+  @apply font-mono text-accent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+  @view-transition {
+    navigation: none;
+  }
+}
+
+/* Adjacent citation numbers, e.g. [1][2], read as 1,2. */
+.prose-post sup + sup::before {
+  content: ",";
+  color: var(--ink-3);
+}
+.prose-post sup a {
+  text-decoration: none;
+  font-family: var(--font-sans);
+}
+/* Blockquotes show the text as written, without added quotation marks. */
+.prose-post :where(blockquote p:first-of-type)::before,
+.prose-post :where(blockquote p:last-of-type)::after {
+  content: none;
 }

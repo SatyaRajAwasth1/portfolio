@@ -1,0 +1,144 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PostList from "../../components/PostList.astro";
+import { getPosts, tagSlug } from "../../lib/content";
+import { FORMATS, type Format } from "../../lib/taxonomy";
+
+const posts = await getPosts();
+
+const formats = (Object.keys(FORMATS) as Format[]).filter((f) => posts.some((p) => p.data.format === f));
+const years = [...new Set(posts.map((p) => p.data.date.slice(0, 4)))];
+
+// Most used tags, for browsing by subject.
+const tagCounts = new Map<string, number>();
+for (const post of posts) for (const tag of post.data.tags) tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+const topTags = [...tagCounts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 12);
+---
+
+<BaseLayout title="Writing" description="Articles on software engineering, systems, AI, and careers in tech.">
+  <div class="pt-10 pb-4 sm:pt-14">
+    <Breadcrumbs items={[{ label: "Writing" }]} />
+
+    <header class="mt-6">
+      <div class="flex flex-wrap items-baseline justify-between gap-4">
+        <h1 class="flex items-baseline gap-3 text-3xl font-semibold tracking-[-0.025em]">
+          Writing <span class="text-lg font-normal text-ink-3 tabular-nums">{posts.length}</span>
+        </h1>
+        <a href="/rss.xml" class="inline-flex items-center gap-1.5 text-sm text-ink-3 transition-colors hover:text-ink">
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16" /><circle cx="5" cy="19" r="1" fill="currentColor" /></svg>
+          RSS feed
+        </a>
+      </div>
+      <p class="mt-2 max-w-[38rem] text-ink-2">
+        Deep dives, overviews, opinions, and lessons from building software in production.
+      </p>
+    </header>
+
+    <div class="mt-8 flex flex-wrap gap-1.5" role="group" aria-label="Filter by type">
+      <button type="button" class="chip" data-filter="all" aria-pressed="true">
+        All <span class="chip-count">{posts.length}</span>
+      </button>
+      {
+        formats.map((f) => (
+          <button type="button" class="chip" data-filter={f} aria-pressed="false" title={FORMATS[f].description}>
+            {FORMATS[f].label} <span class="chip-count">{posts.filter((p) => p.data.format === f).length}</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_14rem] lg:gap-16">
+      <div class="grid gap-12">
+        {
+          years.map((year) => {
+            const inYear = posts.filter((p) => p.data.date.startsWith(year));
+            return (
+              <section data-year aria-labelledby={`y-${year}`}>
+                <h2 id={`y-${year}`} class="mb-3 flex items-baseline gap-2 text-lg font-semibold">
+                  {year} <span class="text-sm font-normal text-ink-3 tabular-nums" data-year-count>{inYear.length}</span>
+                </h2>
+                <PostList posts={inYear} dateStyle="day" />
+              </section>
+            );
+          })
+        }
+        <p id="no-results" class="py-10 text-ink-3" hidden>No posts of this type yet.</p>
+      </div>
+
+      <aside class="lg:pt-1" aria-label="Browse by tag">
+        <div class="lg:sticky lg:top-24">
+          <h2 class="text-sm font-semibold">Browse by tag</h2>
+          <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-1.5 text-sm">
+            {
+              topTags.map(([tag, n]) => (
+                <li>
+                  <a href={`/tags/${tagSlug(tag)}`} class="text-ink-2 transition-colors hover:text-accent">
+                    #{tag} <span class="text-ink-3 tabular-nums">{n}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .chip {
+    cursor: pointer;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .chip:hover {
+    color: var(--ink);
+    border-color: var(--ink-3);
+  }
+  .chip[aria-pressed="true"] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+  .chip-count {
+    margin-left: 0.2rem;
+    opacity: 0.6;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>("[data-filter]");
+
+  function apply(type: string) {
+    let total = 0;
+    document.querySelectorAll<HTMLElement>("[data-year]").forEach((section) => {
+      let visible = 0;
+      section.querySelectorAll<HTMLElement>("li[data-format]").forEach((li) => {
+        const show = type === "all" || li.dataset.format === type;
+        li.hidden = !show;
+        if (show) visible++;
+      });
+      section.hidden = visible === 0;
+      const count = section.querySelector("[data-year-count]");
+      if (count) count.textContent = String(visible);
+      total += visible;
+    });
+    document.getElementById("no-results")!.hidden = total > 0;
+    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === type)));
+    const url = new URL(location.href);
+    if (type === "all") url.searchParams.delete("type");
+    else url.searchParams.set("type", type);
+    history.replaceState(null, "", url);
+  }
+
+  buttons.forEach((b) => b.addEventListener("click", () => apply(b.dataset.filter ?? "all")));
+
+  const initial = new URLSearchParams(location.search).get("type");
+  if (initial && document.querySelector(`[data-filter="${CSS.escape(initial)}"]`)) apply(initial);
+</script>

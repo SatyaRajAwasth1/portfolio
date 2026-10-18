@@ -1,53 +1,75 @@
 ---
-type TocItem = { id: string; text: string; level: number };
+type TocItem = { slug: string; text: string; depth: number };
 const { items = [] } = Astro.props as { items: TocItem[] };
-const getIndentClass = (level: number) => {
-  if (level <= 1) return "";
-  if (level === 2) return "ml-4";
-  if (level === 3) return "ml-8";
-  if (level === 4) return "ml-12";
-  if (level === 5) return "ml-16";
-  return "ml-20";
-};
-/**
- * items: Array<{ id: string; text: string; level: number }>
- */
 ---
 
-<nav
-  aria-label="Table of contents"
-  class="text-sm border-l-2 border-gray-100 py-2"
->
-  <h2
-    class="font-bold mb-4 text-gray-900 dark:text-indigo-100 px-4 uppercase tracking-widest text-xs"
-  >
-    On this page
-  </h2>
-  <ul class="space-y-1">
+<nav aria-label="Table of contents" class="text-sm">
+  <p class="mb-3 hidden font-medium text-ink xl:block">On this page</p>
+  <ol class="grid gap-2 xl:border-l xl:border-rule">
     {
-      items.map(({ id, text, level }: TocItem) => (
-        <li>
-          <a
-            href={`#${id}`}
-            class={`block py-1.5 px-4 transition-all duration-200 border-l-2 -ml-[2px] ${getIndentClass(
-              level,
-            )} border-transparent text-gray-500 hover:text-indigo-600 hover:border-indigo-400`}
-          >
+      items.map(({ slug, text, depth }) => (
+        <li class:list={["xl:-ml-px xl:pl-3", depth === 3 && "pl-3 xl:pl-6"]} data-toc-item>
+          <a href={`#${slug}`} data-toc-link={slug} class="toc-link block leading-snug text-ink-3 transition-colors hover:text-ink">
             {text}
           </a>
         </li>
       ))
     }
-  </ul>
+  </ol>
 </nav>
 
 <style>
-  /* Optional: Active link highlighting logic could be added here via JS if needed */
-  a:hover {
-    background: linear-gradient(
-      90deg,
-      rgba(79, 70, 229, 0.05) 0%,
-      rgba(79, 70, 229, 0) 100%
-    );
+  .toc-link[aria-current="location"] {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  @media (min-width: 80rem) {
+    [data-toc-item]:has(.toc-link[aria-current="location"]) {
+      border-left: 2px solid var(--accent);
+      margin-left: -1px;
+      padding-left: calc(0.75rem - 1px);
+    }
   }
 </style>
+
+<script>
+  // Highlights the section currently being read. A heading counts as "current" once it
+  // has scrolled past the top quarter of the screen.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]")];
+  const slugs = [...new Set(links.map((a) => a.dataset.tocLink!))];
+  const headings = slugs.map((s) => document.getElementById(s)).filter((h): h is HTMLElement => !!h);
+
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const line = window.innerHeight * 0.25;
+    let current: string | undefined;
+    for (const h of headings) {
+      if (h.getBoundingClientRect().top <= line) current = h.id;
+      else break;
+    }
+    // At the very bottom of the page, the last section is the one being read.
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2 && headings.length) {
+      current = headings[headings.length - 1].id;
+    }
+    links.forEach((a) => {
+      if (a.dataset.tocLink === current) a.setAttribute("aria-current", "location");
+      else a.removeAttribute("aria-current");
+    });
+  }
+
+  if (headings.length) {
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    window.addEventListener("resize", update);
+    update();
+  }
+</script>

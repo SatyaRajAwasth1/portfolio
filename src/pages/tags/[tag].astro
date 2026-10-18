@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import Section from "../../components/Section.astro";
+import PostList from "../../components/PostList.astro";
+import ProjectList from "../../components/ProjectList.astro";
+import { getPosts, getProjects, tagSlug, type Post, type Project } from "../../lib/content";
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const projects = await getProjects();
+  const tags = new Map<string, { label: string; posts: Post[]; projects: Project[] }>();
+  const entry = (tag: string) => {
+    const slug = tagSlug(tag);
+    if (!tags.has(slug)) tags.set(slug, { label: tag, posts: [], projects: [] });
+    return tags.get(slug)!;
+  };
+  for (const post of posts) post.data.tags.forEach((t) => entry(t).posts.push(post));
+  for (const project of projects) project.data.tags.forEach((t) => entry(t).projects.push(project));
+  return [...tags].map(([tag, props]) => ({ params: { tag }, props }));
+}
+
+const { label, posts, projects } = Astro.props;
+const total = posts.length + projects.length;
+---
+
+<BaseLayout title={`#${label}`} description={`Writing and projects tagged ${label}.`}>
+  <div class="grid gap-12 pt-10 pb-4 sm:pt-14">
+    <PageHeader breadcrumbs={[{ label: "Writing", href: "/writing" }, { label: `#${label}` }]} title={`#${label}`} description={`${total} ${total === 1 ? "entry" : "entries"} tagged ${label}.`} />
+
+    {
+      posts.length > 0 && (
+        <Section title="Writing">
+          <PostList posts={posts} />
+        </Section>
+      )
+    }
+
+    {
+      projects.length > 0 && (
+        <Section title="Projects">
+          <ProjectList projects={projects} />
+        </Section>
+      )
+    }
+  </div>
+</BaseLayout>

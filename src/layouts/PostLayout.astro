@@ -1,196 +1,200 @@
 ---
-import { components } from "../components/post/post-mdx-components";
-import SeriesNav from "../components/post/SeriesNav.astro";
+import type { MarkdownHeading } from "astro";
 import TableOfContents from "../components/post/TableOfContents.astro";
+import SeriesNav from "../components/post/SeriesNav.astro";
+import ShareLinks from "../components/post/ShareLinks.astro";
+import Comments from "../components/post/Comments.astro";
+import Icon from "../components/Icon.astro";
+import Sep from "../components/Sep.astro";
+import { site } from "../site.config";
+import { FORMATS, STATUSES } from "../lib/taxonomy";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
-import PostActions from "../components/post/PostActions.astro";
-import CommentSection from "../components/post/CommentSection.astro";
+import { bibtex, formatDate, readingMinutes, tagSlug, type Post } from "../lib/content";
 
-type BlogEntry = {
-  slug: string;
-  data: { title: string; category: string; series?: { part: number } };
-};
-const {
-  post,
-  series = [],
-  toc = [],
-} = Astro.props as {
-  post: {
-    slug: string;
-    data: {
-      title: string;
-      date: string;
-      category: string;
-      coverImage?: string;
-      showTOC?: boolean;
-      series?: { title: string; part: number };
-    };
-    Content: any;
-  };
-  series: BlogEntry[];
-  toc: Array<{ id: string; text: string; level: number }>;
-};
-const showTOC =
-  Boolean(post?.data?.showTOC) && Array.isArray(toc) && toc.length > 0;
+interface Props {
+  post: Post;
+  headings: MarkdownHeading[];
+  series: Post[];
+  newer?: Post;
+  older?: Post;
+}
+
+const { post, headings, series, newer, older } = Astro.props;
+const { title, description, date, updated, format, status, tags, draft } = post.data;
+
+const isResearch = FORMATS[format].header === "research";
+const minutes = readingMinutes(post.body);
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const showTOC = post.data.showTOC ?? toc.length >= 3;
+
+const url = new URL(`/writing/${post.slug}`, Astro.site ?? site.url).toString();
+const bib = bibtex(post, url, site.name);
+const [lastName, ...given] = site.name.split(" ").reverse();
+const initials = given.reverse().map((n) => `${n[0]}.`).join(" ");
+
+const currentPart = post.data.series?.part;
+const prevPart = series.find((p) => p.data.series?.part === (currentPart ?? 0) - 1);
+const nextPart = series.find((p) => p.data.series?.part === (currentPart ?? 0) + 1);
 ---
 
-<article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-  <Breadcrumbs
-    items={[
-      { label: "Blogs", href: "/blogs" },
-      { label: post.data.category, href: `/blogs#${post.data.category}` },
-    ]}
-  />
-
-  <!-- Hero Section: Title & Meta -->
-  <header class="mb-12 md:mb-16">
-    <h1
-      class="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-gray-900 tracking-tight mb-6"
-    >
-      {post.data.title}
-    </h1>
-    <div
-      class="flex items-center gap-4 text-sm font-medium text-gray-500 border-b border-gray-100 pb-8"
-    >
-      <time datetime={post.data.date}>
+<!-- Text column starts at the same left edge as every other page; contents sit on the right. -->
+<article class="grid gap-x-16 pt-10 pb-4 sm:pt-14 xl:grid-cols-[minmax(0,44rem)_14rem] xl:justify-between">
+  <div class="min-w-0 max-w-[44rem]" data-pagefind-body data-pagefind-meta={`type:${FORMATS[format].label}`}>
+    <header>
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <Breadcrumbs items={[{ label: "Writing", href: "/writing" }, { label: FORMATS[format].label, href: `/writing?type=${format}` }]} />
         {
-          new Date(post.data.date).toLocaleDateString("en-US", {
-            dateStyle: "long",
-          })
+          isResearch && status && (
+            <span
+              class="ml-auto inline-flex items-center gap-1.5 rounded-full border border-rule px-2.5 py-0.5 text-xs text-ok"
+              title={STATUSES[status].hint}
+            >
+              <i class="inline-block size-1.5 rounded-full bg-ok" aria-hidden="true" />
+              {STATUSES[status].label}
+            </span>
+          )
         }
-      </time>
-      <span class="text-gray-300">/</span>
-      <span class="text-indigo-600 font-bold uppercase tracking-wider text-xs">
-        {post.data.category}
-      </span>
-    </div>
-  </header>
-
-  <!-- Series Info (Top) -->
-  {
-    series.length > 0 && (
-      <aside class="bg-indigo-50/50 dark:bg-gray-900/50 backdrop-blur-sm border border-indigo-100 dark:border-gray-800 p-6 my-10 rounded-2xl">
-        <h3 class="font-bold mb-4 text-indigo-900 dark:text-indigo-100 flex items-center gap-2">
-          <svg
-            class="w-5 h-5 font-bold"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-            />
-          </svg>
-          Series: {post.data.series?.title}
-        </h3>
-        <ul class="space-y-2">
-          {series.map((part: BlogEntry) => {
-            const isCurrent = part.slug === post.slug;
-            return (
-              <li>
-                <a
-                  href={`/blogs/${part.slug}`}
-                  aria-current={isCurrent ? "page" : undefined}
-                  class={`block px-4 py-2 rounded-xl transition-all duration-200 ${
-                    isCurrent
-                      ? "bg-white shadow-sm border border-indigo-200 text-indigo-900 font-bold"
-                      : "text-gray-600 hover:text-indigo-600 hover:bg-white/50"
-                  }`}
-                >
-                  <span class="text-xs font-bold text-indigo-400 mr-2 uppercase tracking-tighter">
-                    Part {part.data.series?.part}
-                  </span>
-                  {part.data.title}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      </aside>
-    )
-  }
-
-  <!-- Mobile TOC (top) -->
-  {
-    showTOC && (
-      <div class="lg:hidden mb-12">
-        <TableOfContents items={toc} />
+        {draft && <span class="ml-auto rounded-full bg-paper-2 px-2.5 py-0.5 text-xs text-warn">Draft, not published</span>}
       </div>
-    )
-  }
 
-  <!-- Main Content with optional desktop TOC -->
-  <div class={`grid gap-12 ${showTOC ? "lg:grid-cols-[1fr_280px]" : ""}`}>
-    <div
-      class="prose prose-indigo prose-lg max-w-none prose-headings:font-extrabold prose-headings:tracking-tight prose-a:text-indigo-600 prose-img:rounded-3xl prose-img:shadow-lg"
-    >
-      <post.Content components={components} />
-    </div>
+      <h1 class="mt-6 text-[2rem] leading-[1.15] font-semibold tracking-[-0.025em] sm:text-[2.5rem]">{title}</h1>
+      <p class="mt-3 text-lg leading-relaxed text-ink-2 text-pretty">{description}</p>
+
+      <p class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+        <a href={`/writing?type=${format}`} class="font-medium text-accent hover:underline">{FORMATS[format].label}</a>
+        {tags.length > 0 && <span class="text-ink-3/60" aria-hidden="true">/</span>}
+        {tags.map((tag) => <a href={`/tags/${tagSlug(tag)}`} class="text-ink-3 transition-colors hover:text-ink">#{tag}</a>)}
+      </p>
+
+      <div class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-rule pb-6 text-sm text-ink-3">
+        <img src={site.avatar} alt="" width="24" height="24" class="size-6 rounded-full" />
+        <span class="text-ink-2">{site.name}</span>
+        <Sep />
+        <time datetime={date}>{formatDate(date)}</time>
+        {isResearch && updated && (<><Sep /><span>Updated <time datetime={updated}>{formatDate(updated)}</time></span></>)}
+        <Sep />
+        <span>{minutes} min read</span>
+        {
+          isResearch && (
+            <button type="button" class="ml-auto cursor-pointer text-accent hover:underline" data-cite-toggle aria-expanded="false" aria-controls="cite">
+              Cite
+            </button>
+          )
+        }
+      </div>
+
+      {
+        isResearch && (
+          <div id="cite" class="relative mt-4 rounded-lg border border-rule bg-paper-2 p-4" hidden data-pagefind-ignore>
+            <p class="pr-24 text-sm text-ink-2">
+              {lastName}, {initials} ({date.slice(0, 4)}). <i>{title}.</i> {new URL(site.url).host}.
+            </p>
+            <pre class="mt-3 overflow-x-auto border-t border-rule pt-3 font-mono text-xs leading-relaxed text-ink-2" data-bib>{bib}</pre>
+            <button
+              type="button"
+              data-copy-bib
+              class="absolute top-3 right-3 cursor-pointer rounded-md border border-rule bg-paper px-2.5 py-1 text-xs text-ink-2 hover:text-ink"
+            >
+              Copy BibTeX
+            </button>
+          </div>
+        )
+      }
+    </header>
 
     {
       showTOC && (
-        <aside class="hidden lg:block sticky top-32 h-fit">
-          <TableOfContents items={toc} />
+        <details class="mt-6 rounded-lg border border-rule px-4 py-3 xl:hidden">
+          <summary class="cursor-pointer text-sm font-medium">On this page</summary>
+          <div class="mt-3">
+            <TableOfContents items={toc} />
+          </div>
+        </details>
+      )
+    }
+
+    {
+      series.length > 1 && (
+        <aside class="mt-8 rounded-lg border border-rule p-4" aria-label="Series">
+          <p class="text-sm font-medium">Series: {post.data.series?.title}</p>
+          <ol class="mt-2 grid gap-1 text-sm">
+            {series.map((part) => (
+              <li class="flex gap-2.5">
+                <span class="w-4 text-ink-3 tabular-nums">{part.data.series?.part}</span>
+                {part.slug === post.slug ? (
+                  <span class="font-medium text-ink" aria-current="page">{part.data.title}</span>
+                ) : (
+                  <a class="link" href={`/writing/${part.slug}`}>{part.data.title}</a>
+                )}
+              </li>
+            ))}
+          </ol>
         </aside>
       )
     }
-  </div>
 
-  <div id="interactions" class="scrollTo-interactions">
-    <PostActions postSlug={post.slug} postTitle={post.data.title} />
-    <CommentSection postSlug={post.slug} />
-  </div>
+    <div class="prose prose-post mt-10">
+      <slot />
+    </div>
 
-  <!-- Series Navigation (Bottom) -->
+    {series.length > 1 && <SeriesNav prev={prevPart} next={nextPart} />}
+
+    <ShareLinks title={title} url={url} />
+    <Comments />
+
+    <nav class="mt-12 grid gap-3 sm:grid-cols-2" aria-label="More writing" data-pagefind-ignore>
+      {
+        older ? (
+          <a href={`/writing/${older.slug}`} class="group rounded-lg border border-rule p-4 transition-colors hover:border-ink-3">
+            <span class="inline-flex items-center gap-1 text-xs text-ink-3"><Icon name="arrow-left" />Older</span>
+            <span class="mt-1 block font-medium leading-snug group-hover:text-accent">{older.data.title}</span>
+          </a>
+        ) : (
+          <span class="hidden sm:block" />
+        )
+      }
+      {
+        newer && (
+          <a href={`/writing/${newer.slug}`} class="group rounded-lg border border-rule p-4 text-right transition-colors hover:border-ink-3">
+            <span class="inline-flex items-center gap-1 text-xs text-ink-3">Newer<Icon name="arrow-right" /></span>
+            <span class="mt-1 block font-medium leading-snug group-hover:text-accent">{newer.data.title}</span>
+          </a>
+        )
+      }
+    </nav>
+  </div>
 
   {
-    post.data.series && (
-      <div class="mt-20 pt-10 border-t border-gray-100">
-        {(() => {
-          const currentPart = post.data.series?.part;
-          if (typeof currentPart !== "number") return null;
-          return (
-            <SeriesNav
-              prev={series.find(
-                (p: BlogEntry) =>
-                  (p.data.series?.part ?? -Infinity) === currentPart - 1,
-              )}
-              next={series.find(
-                (p: BlogEntry) =>
-                  (p.data.series?.part ?? -Infinity) === currentPart + 1,
-              )}
-            />
-          );
-        })()}
-      </div>
+    showTOC && (
+      <aside class="hidden xl:block" aria-label="Contents">
+        <div class="sticky top-24 pt-36">
+          <TableOfContents items={toc} />
+        </div>
+      </aside>
     )
   }
 </article>
+
 <script>
-  function handleScrollTo() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const scrollToId = urlParams.get("scrollTo");
+  const citeToggle = document.querySelector<HTMLButtonElement>("[data-cite-toggle]");
+  const cite = document.getElementById("cite");
+  citeToggle?.addEventListener("click", () => {
+    if (!cite) return;
+    cite.hidden = !cite.hidden;
+    citeToggle.setAttribute("aria-expanded", String(!cite.hidden));
+    citeToggle.textContent = cite.hidden ? "Cite" : "Hide citation";
+  });
 
-    if (scrollToId) {
-      const element = document.getElementById(scrollToId);
-      if (element) {
-        // Wait a bit for the page to fully render (especially comments)
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: "smooth" });
-
-          // Clean up the URL without refreshing
-          const newUrl = window.location.pathname;
-          window.history.replaceState({}, document.title, newUrl);
-        }, 500);
+  document.querySelectorAll<HTMLButtonElement>("[data-copy-bib]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const text = btn.parentElement?.querySelector("[data-bib]")?.textContent ?? "";
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = "Copied";
+      } catch {
+        btn.textContent = "Copy failed";
       }
-    }
-  }
-
-  // Run on initial load
-  handleScrollTo();
-  // Run on view transitions
-  document.addEventListener("astro:page-load", handleScrollTo);
+      setTimeout(() => (btn.textContent = "Copy BibTeX"), 1600);
+    });
+  });
 </script>

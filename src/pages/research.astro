@@ -1,0 +1,65 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import Section from "../components/Section.astro";
+import PostList from "../components/PostList.astro";
+import ProjectList from "../components/ProjectList.astro";
+import { site } from "../site.config";
+import { getPosts, getProjects, inlineLinks } from "../lib/content";
+
+const posts = await getPosts();
+const notes = posts.filter((p) => p.data.format === "research-notes" || p.data.format === "deep-dives");
+const researchProjects = (await getProjects()).filter((p) => p.data.type === "research");
+---
+
+<BaseLayout title="Research" description="Research interests, projects, and notes.">
+  <div class="pt-10 pb-4 sm:pt-14">
+    <Breadcrumbs items={[{ label: "Research" }]} />
+
+    <header class="mt-6">
+      <h1 class="text-3xl font-semibold tracking-[-0.025em]">Research</h1>
+    </header>
+
+    <div class="mt-12 grid gap-16">
+      <Section title="Research interests">
+        <div class="max-w-[44rem]">
+          <div class="prose prose-post">
+            {
+              site.research.interests.map((paragraph) => (
+                <p>{inlineLinks(paragraph).map((part) => (part.href ? <a href={part.href}>{part.text}</a> : part.strong ? <strong>{part.text}</strong> : part.text))}</p>
+              ))
+            }
+          </div>
+        </div>
+      </Section>
+
+      {
+        researchProjects.length > 0 && (
+          <Section title="Research projects">
+            <ProjectList projects={researchProjects} />
+          </Section>
+        )
+      }
+
+      <Section title="Notes and deep dives">
+        {
+          notes.length > 0 ? (
+            <PostList posts={notes} />
+          ) : (
+            <p class="text-ink-2">
+              Research notes and deep dives will appear here as they are published. In the meantime,
+              see <a class="link" href="/writing">all writing</a>.
+            </p>
+          )
+        }
+      </Section>
+
+      <Section title="Collaborate">
+        <p class="max-w-[44rem] text-ink-2">
+          I am open to research collaborations, reading groups, and graduate research opportunities
+          in these areas. Write to me at <a class="link" href={`mailto:${site.email}`}>{site.email}</a>.
+        </p>
+      </Section>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,62 +1,24 @@
 ---
+import { site } from "../site.config";
 
+const year = new Date().getFullYear();
 ---
 
-<footer class="bg-gray-50 border border-gray-200 rounded-t-xl mt-20">
-    <div class="max-w-6xl mx-auto px-4 py-10 text-gray-700">
-      <!-- Top Section: Personal Touch + Social Links -->
-      <div class="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
-        
-        <!-- Left: Personal Message -->
-        <div class="text-center md:text-left text-base text-gray-700 leading-relaxed">
-          <p class="font-semibold text-gray-800 text-lg">Satya Raj Awasthi</p>
-          <p class="mt-2">
-            Have something in mind — a collaboration, partnership, or opportunity to share?
-            <br />
-            <span class="font-medium">Drop a message at</span>
-            <a href="mailto:hello@satyarajawasthi.com.np" class="text-indigo-600 hover:underline font-medium">
-              hello@satyarajawasthi.com.np
-            </a>
-          </p>
-        </div>
-  
-        <!-- Right: Social Icons -->
-        <div class="flex space-x-5 text-gray-600">
-          <!-- GitHub -->
-          <a href="https://github.com/SatyaRajAwasth1" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="hover:text-black transition">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 .5C5.7.5.9 5.3.9 11.7c0 4.9 3.1 9 7.5 10.4.5.1.7-.2.7-.5v-1.8c-3.1.7-3.8-1.3-3.8-1.3-.4-1.1-1-1.4-1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1.1 1.5 1.1.9 1.5 2.4 1.1 3 .9.1-.7.4-1.1.7-1.3-2.5-.3-5.2-1.3-5.2-5.6 0-1.2.4-2.2 1.1-3-.1-.3-.5-1.6.1-3.3 0 0 .9-.3 3 1.1.9-.3 1.9-.4 2.9-.4s2 .1 2.9.4c2.1-1.4 3-1.1 3-1.1.6 1.7.2 3 .1 3.3.7.8 1.1 1.8 1.1 3 0 4.3-2.7 5.3-5.2 5.6.4.3.8.9.8 1.9v2.8c0 .3.2.6.7.5 4.4-1.4 7.5-5.5 7.5-10.4C23.1 5.3 18.3.5 12 .5z"/>
-            </svg>
-          </a>
-  
-          <!-- LinkedIn -->
-          <a href="https://linkedin.com/in/SatyaRajAwasth1" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="hover:text-blue-700 transition">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zm7.5 0h3.6v2.1h.05c.5-.9 1.7-2.1 3.45-2.1 3.7 0 4.4 2.4 4.4 5.5V24h-4v-9.5c0-2.3-.05-5.2-3.2-5.2s-3.7 2.5-3.7 5.1V24h-4V8z"/>
-            </svg>
-          </a>
-  
-          <!-- Twitter -->
-          <a href="https://twitter.com/SatyaRajAwasth1" target="_blank" rel="noopener noreferrer" aria-label="Twitter" class="hover:text-blue-500 transition">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
-            </svg>
-          </a>
-  
-          <!-- YouTube -->
-          <a href="https://www.youtube.com/@SatyaRajAwasth1" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="hover:text-red-600 transition">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M23.5 6.5s-.2-1.6-.8-2.3c-.7-.8-1.5-.8-1.9-.9C17.4 3 12 3 12 3s-5.4 0-8.8.3c-.4 0-1.3.1-1.9.9-.6.7-.8 2.3-.8 2.3S0 8.4 0 10.2v1.6c0 1.8.2 3.7.2 3.7s.2 1.6.8 2.3c.7.8 1.6.8 2 .9 1.5.1 6.8.3 6.8.3s5.4 0 8.8-.3c.4 0 1.3-.1 1.9-.9.6-.7.8-2.3.8-2.3s.2-1.8.2-3.7v-1.6c0-1.8-.2-3.7-.2-3.7zM9.7 14.6V8.8l6 2.9-6 2.9z"/>
-            </svg>
-          </a>
-        </div>
-      </div>
-  
-      <!-- Bottom Line -->
-      <div class="mt-8 border-t border-gray-200 pt-6 text-center text-sm text-gray-500 leading-relaxed">
-        © 2025 Satya Raj Awasthi · Built with 💚 using
-        <a href="https://astro.build" class="text-indigo-600 hover:underline font-medium">Astro</a>
-      </div>
-    </div>
-  </footer>
-  
+<footer class="mt-24 border-t border-rule">
+  <div class="mx-auto flex max-w-[68rem] flex-col gap-4 px-5 py-8 text-sm text-ink-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <p>Copyright {year} {site.name}</p>
+    <ul class="flex flex-wrap gap-x-5 gap-y-1">
+      <li><a class="hover:text-ink" href={`mailto:${site.email}`}>Email</a></li>
+      {
+        site.socials.map(({ label, href }) => (
+          <li>
+            <a class="hover:text-ink" href={href} target="_blank" rel="noopener noreferrer">{label}</a>
+          </li>
+        ))
+      }
+      <li><a class="hover:text-ink" href="/log">Log</a></li>
+      <li><a class="hover:text-ink" href="/now">Now</a></li>
+      <li><a class="hover:text-ink" href="/rss.xml">RSS</a></li>
+    </ul>
+  </div>
+</footer>

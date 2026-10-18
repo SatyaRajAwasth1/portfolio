@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostLayout from "../../layouts/PostLayout.astro";
+import { getPosts } from "../../lib/content";
+import { components } from "../../components/post/post-mdx-components";
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post, i) => ({
+    params: { slug: post.slug },
+    // Posts are sorted newest first, so the next index is the older post.
+    props: { post, newer: posts[i - 1], older: posts[i + 1], all: posts },
+  }));
+}
+
+const { post, newer, older, all } = Astro.props;
+const { Content, headings } = await post.render();
+
+const series = post.data.series
+  ? all
+      .filter((p) => p.data.series?.id === post.data.series?.id)
+      .sort((a, b) => a.data.series!.part - b.data.series!.part)
+  : [];
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  type="article"
+>
+  <PostLayout post={post} headings={headings} series={series} newer={newer} older={older}>
+    <Content components={components} />
+  </PostLayout>
+</BaseLayout>

@@ -1,26 +1,29 @@
 ---
-const { children, language = "text" } = Astro.props;
+// For plain code that should not go through Markdown fences. Prefer ```lang fences,
+// which get syntax highlighting.
+const { language = "text", filename } = Astro.props as { language?: string; filename?: string };
 ---
 
-<pre class="relative bg-gray-900 text-gray-100 rounded-xl p-4 overflow-auto font-mono text-sm">
-  <code class={`language-${language}`}><slot /></code>
-  <button class="copy-btn absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-xs px-2 py-1 rounded">Copy</button>
-</pre>
+<div class="code-block not-prose my-7 rounded-[3px] border border-rule bg-paper-2">
+  <div class="flex items-center justify-between border-b border-rule px-3 py-1.5 font-mono text-[0.6875rem] text-ink-3">
+    <span>{filename ?? language}</span>
+    <button type="button" class="copy-btn cursor-pointer hover:text-ink">Copy</button>
+  </div>
+  <pre class="overflow-x-auto px-4 py-3.5 font-mono text-[0.8125rem] leading-relaxed text-ink"><code class={`language-${language}`}><slot /></code></pre>
+</div>
 
 <script>
-  const pre = document.currentScript?.previousElementSibling as HTMLElement | null;
-  if (pre) {
-    const button = pre.querySelector('button.copy-btn') as HTMLButtonElement | null;
-    const code = pre.querySelector('code');
-    if (button && code) {
-      button.addEventListener('click', async () => {
-        const text = code.textContent || '';
-        try {
-          await navigator.clipboard.writeText(text);
-          button.textContent = 'Copied!';
-          setTimeout(() => { button.textContent = 'Copy'; }, 1200);
-        } catch {}
-      });
-    }
-  }
+  document.querySelectorAll<HTMLElement>(".code-block").forEach((block) => {
+    const button = block.querySelector<HTMLButtonElement>(".copy-btn");
+    const code = block.querySelector("code");
+    button?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(code?.textContent ?? "");
+        button.textContent = "Copied";
+      } catch {
+        button.textContent = "Copy failed";
+      }
+      setTimeout(() => (button.textContent = "Copy"), 1200);
+    });
+  });
 </script>
