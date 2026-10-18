@@ -1,0 +1,32 @@
+---
+// Plain share links at the end of a post: copy the link, or share it on X or LinkedIn.
+interface Props {
+  title: string;
+  url: string;
+}
+
+const { title, url } = Astro.props;
+const x = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+const linkedin = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+---
+
+<section class="mt-12 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule pt-6 text-sm" aria-label="Share">
+  <span class="text-ink-3">Share this post</span>
+  <button type="button" class="link cursor-pointer" data-copy-link={url}>Copy link</button>
+  <a class="link" href={x} target="_blank" rel="noopener noreferrer">X (Twitter)</a>
+  <a class="link" href={linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-copy-link]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copyLink ?? location.href);
+        btn.textContent = "Link copied";
+      } catch {
+        btn.textContent = "Copy failed";
+      }
+      setTimeout(() => (btn.textContent = "Copy link"), 1600);
+    });
+  });
+</script>

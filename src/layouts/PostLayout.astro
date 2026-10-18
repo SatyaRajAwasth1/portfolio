@@ -2,8 +2,7 @@
 import type { MarkdownHeading } from "astro";
 import TableOfContents from "../components/post/TableOfContents.astro";
 import SeriesNav from "../components/post/SeriesNav.astro";
-import PostActions from "../components/post/PostActions.astro";
-import CommentSection from "../components/post/CommentSection.astro";
+import ShareLinks from "../components/post/ShareLinks.astro";
 import Icon from "../components/Icon.astro";
 import Sep from "../components/Sep.astro";
 import { site } from "../site.config";
@@ -139,10 +138,7 @@ const nextPart = series.find((p) => p.data.series?.part === (currentPart ?? 0) +
 
     {series.length > 1 && <SeriesNav prev={prevPart} next={nextPart} />}
 
-    <section id="interactions" class="ui-legacy mt-12 border-t border-rule" aria-label="Reactions and comments">
-      <PostActions postSlug={post.slug} postTitle={title} />
-      <CommentSection postSlug={post.slug} />
-    </section>
+    <ShareLinks title={title} url={url} />
 
     <nav class="mt-12 grid gap-3 sm:grid-cols-2" aria-label="More writing">
       {
@@ -199,13 +195,4 @@ const nextPart = series.find((p) => p.data.series?.part === (currentPart ?? 0) +
       setTimeout(() => (btn.textContent = "Copy BibTeX"), 1600);
     });
   });
-
-  // After Google sign-in the visitor lands on ?scrollTo=interactions; take them back to the comments.
-  const scrollToId = new URLSearchParams(location.search).get("scrollTo");
-  if (scrollToId) {
-    setTimeout(() => {
-      document.getElementById(scrollToId)?.scrollIntoView({ behavior: "smooth" });
-      history.replaceState({}, document.title, location.pathname);
-    }, 500);
-  }
 </script>

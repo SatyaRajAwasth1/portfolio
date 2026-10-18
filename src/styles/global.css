@@ -234,50 +234,6 @@
   @apply font-mono text-accent;
 }
 
-/*
-  Like, share, and comment widgets still use stock Tailwind colors. Inside this
-  wrapper those colors are remapped onto the site tokens so they match both themes.
-*/
-.ui-legacy {
-  --color-white: var(--paper);
-  --color-gray-50: var(--paper-2);
-  --color-gray-100: var(--rule);
-  --color-gray-200: var(--rule);
-  --color-gray-300: var(--rule);
-  --color-gray-400: var(--ink-3);
-  --color-gray-500: var(--ink-3);
-  --color-gray-600: var(--ink-2);
-  --color-gray-700: var(--ink-2);
-  --color-gray-800: var(--ink);
-  --color-gray-900: var(--ink);
-  --color-indigo-50: var(--accent-soft);
-  --color-indigo-100: var(--accent-soft);
-  --color-indigo-200: var(--rule);
-  --color-indigo-300: var(--accent);
-  --color-indigo-400: var(--accent);
-  --color-indigo-500: var(--accent);
-  --color-indigo-600: var(--accent);
-  --color-indigo-700: var(--accent);
-  --color-indigo-900: var(--ink);
-  --radius-lg: 3px;
-  --radius-xl: 4px;
-  --radius-2xl: 4px;
-  --radius-3xl: 4px;
-}
-.ui-legacy :where(#comments-section) {
-  background: transparent;
-}
-.ui-legacy :where(.shadow-sm, .shadow-md, .shadow-lg, .shadow-xl) {
-  box-shadow: none;
-}
-/* Match the site's buttons: small radius instead of pills. */
-.ui-legacy :where(button.rounded-full, a.rounded-full, div.rounded-full) {
-  border-radius: 6px;
-}
-.ui-legacy :where(h2.text-2xl) {
-  font-size: 1.125rem;
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
