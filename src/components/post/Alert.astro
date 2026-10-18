@@ -1,18 +1,8 @@
 ---
-type Variant = "info" | "warning" | "error" | "success";
-const { variant = "info" } = Astro.props as { variant?: Variant };
+import Callout from "./Callout.astro";
 
-const variants = {
-  info: "bg-blue-100 border-blue-500 text-blue-900",
-  warning: "bg-yellow-100 border-yellow-500 text-yellow-900",
-  error: "bg-red-100 border-red-500 text-red-900",
-  success: "bg-green-100 border-green-500 text-green-900",
-};
-const variantClass = variants[variant as Variant] || variants.info;
+type Variant = "info" | "warning" | "error" | "success";
+const { variant = "info", title } = Astro.props as { variant?: Variant; title?: string };
 ---
 
-<div class={`border-l-4 p-4 rounded-xl ${variantClass} my-4`}>
-  <div class="text-sm leading-relaxed">
-    <slot />
-  </div>
-</div>
+<Callout type={variant} title={title}><slot /></Callout>

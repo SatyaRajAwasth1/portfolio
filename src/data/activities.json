@@ -1,30 +1,57 @@
 [
     {
-        "title": "Mentored & Presented on \"Continue building your Hackathon Project in public\"",
-        "event": "Hack36 8.0, MNNIT India",
+        "title": "Started the MSc in Computer Engineering",
+        "event": "NCIT, Pokhara University",
+        "date": "2026-06-04"
+    },
+    {
+        "title": "Joined Niural AI as a Software Engineer II",
+        "event": "Niural AI",
+        "link": "https://niural.com?utm_source=satyarajawasthi_portfolio&utm_medium=referral&utm_campaign=personal_profile",
+        "date": "2025-12-16"
+    },
+    {
+        "title": "Graduated with a BE in Software Engineering",
+        "event": "NCIT, Pokhara University",
+        "date": "2025-12-31"
+    },
+    {
+        "title": "Completed major project \"SwiftCache: High-Performance In-Memory Caching Database\"",
+        "event": "BE in Software Engineering, NCIT, Pokhara University",
+        "date": "2025-12-01"
+    },
+    {
+        "title": "Mentored and presented \"Continue Building Your Hackathon Project in Public\"",
+        "event": "Hack36 8.0, MNNIT, India",
         "role": "GitHub Campus Expert",
         "link": "https://githubcampus.expert/",
         "date": "2024-04-10"
     },
     {
-        "title": "Project Defense - \"A Log-Based Fault Localization and Anomaly Detection System\"",
-        "event": "BE in Software Engineering @NCIT, Pokhara University",
+        "title": "Defended minor project \"A Log-Based Fault Localization and Anomaly Detection System\"",
+        "event": "BE in Software Engineering, NCIT, Pokhara University",
         "date": "2024-12-15"
     },
     {
-        "title": "Knowledge Sharing Session - \"OAuth 2.0 and JSON Web Encryption (JWE)\"",
-        "event": "Engineering Department - eSewa",
+        "title": "Led a knowledge-sharing session on \"OAuth 2.0 and JSON Web Encryption (JWE)\"",
+        "event": "Engineering team, eSewa",
         "date": "2024-11-20"
     },
     {
-        "title": "Led and facilitated celebration of NOSK Software Freedom Day 2024",
+        "title": "Led and facilitated the NOSK Software Freedom Day 2024 celebration",
         "link": "https://sfd.nosk.org.np/",
         "event": "NOSK",
         "date": "2024-09-21"
     },
     {
-        "title": "Presented on \"Open Source - Student Professional Perspective\"",
-        "event": "@Gnome Asia Summit 2024",
+        "title": "Presented \"Open Source: A Student and Professional Perspective\"",
+        "event": "GNOME Asia Summit 2024",
         "date": "2024-10-18"
+    },
+    {
+        "title": "Joined eSewa as a Software Engineer",
+        "link": "https://www.esewa.com?utm_source=satyarajawasthi_portfolio&utm_medium=referral&utm_campaign=personal_profile",
+        "event": "eSewa Ltd.",
+        "date": "2023-03-15"
     }
 ]

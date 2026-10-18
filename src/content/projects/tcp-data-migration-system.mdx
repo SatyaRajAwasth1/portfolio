@@ -1,0 +1,43 @@
+---
+title: "Secure Data Migration System over TCP"
+summary: "A file migration system built on a custom TCP-based protocol, with resumable transfers and end-to-end integrity checks."
+date: "2025-11-07"
+area: "Network programming"
+type: "engineering"
+role: "Network Programming coursework, NCIT"
+stack: ["C", "POSIX sockets", "select()", "SHA-256"]
+tags: ["distributed-systems", "programming-systems"]
+links:
+  repo: "https://github.com/SatyaRajAwasth1/tcp-data-migration-system"
+featured: true
+---
+
+## Overview
+
+A sender and receiver that migrate directories across a network using a custom application-layer
+protocol over TCP. It transfers only what has changed, resumes interrupted transfers, and verifies
+every file once it arrives.
+
+## Design
+
+- **Smart difference detection.** The receiver compares SHA-256 hashes against its local state and
+  requests only missing or modified files.
+- **Chunk-based transfer.** Large files are streamed in chunks of a configurable size.
+- **Resume support.** Partial transfers are detected and continue from the last byte received.
+- **Integrity verification.** A SHA-256 check after each transfer confirms the file matches the source.
+- **Multiplexed I/O.** The receiver handles multiple client connections with `select()`.
+
+## Protocol
+
+1. **Handshake.** Sender and receiver exchange `CMD_HELLO` to negotiate capabilities.
+2. **Metadata exchange.** The sender sends the directory structure, file sizes, and hashes.
+3. **Difference detection.** The receiver works out which files are missing or stale.
+4. **Selective request.** The receiver asks for those files, with an offset when resuming.
+5. **Chunked delivery.** Files are streamed in managed chunks with progress tracking.
+6. **Verification and completion.** Hashes are checked, state is synchronized, and the connection closes.
+
+## Limitations and next steps
+
+The system currently supports IPv4 only, sends data uncompressed, and is limited to 10,000 files per
+session. Planned work includes compression with zlib, encryption in transit with TLS, a
+thread-per-file model for higher throughput, and live progress reporting.

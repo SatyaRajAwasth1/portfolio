@@ -1,0 +1,20 @@
+---
+// A page section with a heading and an optional "view all" link on the right.
+import Icon from "./Icon.astro";
+
+interface Props {
+  title: string;
+  id?: string;
+  more?: { label: string; href: string };
+}
+
+const { title, id, more } = Astro.props;
+---
+
+<section id={id} class="scroll-mt-20">
+  <div class="mb-4 flex items-baseline justify-between gap-4">
+    <h2 class="text-lg font-semibold tracking-[-0.01em]">{title}</h2>
+    {more && <a href={more.href} class="inline-flex items-center gap-1 text-sm text-ink-3 transition-colors hover:text-ink">{more.label}<Icon name="arrow-right" /></a>}
+  </div>
+  <slot />
+</section>

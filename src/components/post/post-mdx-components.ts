@@ -5,10 +5,9 @@ import Figure from './Figure.astro';
 import Note from './Note.astro';
 import Quote from './Quote.astro';
 import References from './References.astro';
-import TableOfContents from './TableOfContents.astro';
-import SeriesNav from './SeriesNav.astro';
+import Sidenote from './Sidenote.astro';
 
-// Optional: Add default HTML tag mappings if needed
+// Components available inside every .mdx post without importing them.
 export const components = {
   Alert,
   Callout,
@@ -17,6 +16,5 @@ export const components = {
   Note,
   Quote,
   References,
-  TableOfContents,
-  SeriesNav,
+  Sidenote,
 };

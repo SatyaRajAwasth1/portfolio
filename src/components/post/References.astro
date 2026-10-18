@@ -1,12 +1,29 @@
 ---
-const { items = [] } = Astro.props;
+// <References items={[{ label: "Author. Title. Year.", href: "https://..." }]} />
+// Cite inline with <sup><a href="#ref-1">1</a></sup>.
+const { items = [] } = Astro.props as { items: { label: string; href?: string }[] };
 ---
 
-<section class="mt-12 border-t pt-4 text-sm text-gray-600 dark:text-gray-400">
-  <h2 class="font-semibold mb-2">References</h2>
-  <ol class="list-decimal list-inside space-y-1">
-    {items.map((ref) => (
-      <li><a href={ref.href} class="text-indigo-600 hover:underline">{ref.label}</a></li>
-    ))}
+<section class="not-prose mt-12 border-t border-rule pt-4.5" aria-label="References">
+  <h2 class="eyebrow mb-3">References</h2>
+  <ol class="grid gap-2 font-sans text-sm text-ink-2">
+    {
+      items.map((ref, i) => (
+        <li id={`ref-${i + 1}`} class="grid scroll-mt-6 grid-cols-[2.75em_minmax(0,1fr)] [overflow-wrap:anywhere]">
+          <span class="pt-0.5 font-mono text-xs text-ink-3">[{i + 1}]</span>
+          <span>
+            {ref.label}
+            {ref.href && (
+              <>
+                {" "}
+                <a class="link" href={ref.href} target="_blank" rel="noopener">
+                  {new URL(ref.href).host.replace(/^www\./, "")}
+                </a>
+              </>
+            )}
+          </span>
+        </li>
+      ))
+    }
   </ol>
 </section>

@@ -1,0 +1,50 @@
+---
+import type { Post } from "../lib/content";
+import { formatDate, tagSlug } from "../lib/content";
+import { FORMATS } from "../lib/taxonomy";
+
+interface Props {
+  posts: Post[];
+  showDescription?: boolean;
+  // "day" for lists already grouped by year (e.g. "Jan 30"), "full" otherwise.
+  dateStyle?: "day" | "full";
+}
+
+const { posts, showDescription = true, dateStyle = "full" } = Astro.props;
+const shownDate = (date: string) =>
+  dateStyle === "day" ? formatDate(date).replace(/, \d{4}$/, "") : formatDate(date);
+---
+
+<ul class="grid divide-y divide-rule border-y border-rule">
+  {
+    posts.map((post) => (
+      <li data-format={post.data.format} class="grid gap-x-8 gap-y-1 py-5 sm:grid-cols-[6.5rem_minmax(0,1fr)]">
+        <time datetime={post.data.date} class="pt-0.5 text-sm text-ink-3 tabular-nums">
+          {shownDate(post.data.date)}
+        </time>
+        <div class="min-w-0">
+          <h3 class="text-[1.0625rem] leading-snug font-medium">
+            <a href={`/writing/${post.slug}`} class="text-ink transition-colors hover:text-accent">
+              {post.data.title}
+            </a>
+            {post.data.draft && <span class="ml-2 text-xs font-normal text-warn">Draft</span>}
+          </h3>
+          {showDescription && (
+            <p class="mt-1 line-clamp-2 max-w-[46rem] text-[0.9375rem] text-ink-2">{post.data.description}</p>
+          )}
+          <p class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem]">
+            <a href={`/writing?type=${post.data.format}`} class="font-medium text-accent hover:underline">
+              {FORMATS[post.data.format].label}
+            </a>
+            {post.data.tags.length > 0 && <span class="text-rule" aria-hidden="true">/</span>}
+            {post.data.tags.slice(0, 4).map((tag) => (
+              <a href={`/tags/${tagSlug(tag)}`} class="text-ink-3 transition-colors hover:text-ink">
+                #{tag}
+              </a>
+            ))}
+          </p>
+        </div>
+      </li>
+    ))
+  }
+</ul>

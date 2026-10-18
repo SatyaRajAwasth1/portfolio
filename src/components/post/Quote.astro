@@ -1,8 +1,17 @@
 ---
-const { author } = Astro.props;
+const { author, source } = Astro.props as { author?: string; source?: string };
 ---
 
-<blockquote class="border-l-4 border-indigo-500 pl-4 italic text-gray-700 dark:text-gray-300 my-6">
-  <slot />
-  {author && <footer class="mt-2 text-sm font-semibold">— {author}</footer>}
-</blockquote>
+<figure class="not-prose my-8 border-l-2 border-ink pl-5">
+  <blockquote class="font-serif text-[1.3125rem] leading-snug text-ink italic">
+    <slot />
+  </blockquote>
+  {
+    author && (
+      <figcaption class="mt-2.5 font-mono text-xs text-ink-3">
+        {author}
+        {source && <span>, {source}</span>}
+      </figcaption>
+    )
+  }
+</figure>

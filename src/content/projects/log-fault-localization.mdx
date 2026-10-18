@@ -1,0 +1,48 @@
+---
+title: "sysCrow: Log-Based Anomaly Detection and Fault Localization"
+summary: "Detecting anomalous behavior in system logs and locating the component most likely responsible for a failure."
+date: "2024-12-15"
+area: "Software reliability"
+type: "research"
+role: "Minor project, BE in Software Engineering, NCIT. Built with Prasiddha Acharya."
+stack: ["Python", "TypeScript"]
+tags: ["distributed-systems", "system-architecture", "ai"]
+links:
+  repo: "https://github.com/SatyaRajAwasth1/sysCrow"
+featured: true
+---
+
+## Overview
+
+When a production system fails, the evidence is spread across thousands of log lines from many
+components. sysCrow is an autonomous system that detects anomalous behavior in logs and points to
+the components and events most likely related to the fault. It adapts ideas from peer-reviewed
+research into a practical, end-to-end tool.
+
+## Approach
+
+sysCrow combines two complementary methods.
+
+**Supervised anomaly detection.** Inspired by DeepLog, a sequence model learns the normal patterns
+of log events and flags deviations from them as anomalies.
+
+**Fault localization with unsupervised segmentation.** An unsupervised method segments logs into
+meaningful contexts, which highlights the suspicious components and events around a fault.
+
+## Background
+
+The project was developed with [Prasiddha Acharya](https://github.com/prsydha) as our minor project
+for the BE in Software Engineering at NCIT, Pokhara University, and defended in December 2024.
+
+<References
+  items={[
+    {
+      label: "Du, M., Li, F., Zheng, G., and Srikumar, V. DeepLog: Anomaly Detection and Diagnosis from System Logs through Deep Learning. ACM CCS, 2017.",
+      href: "https://doi.org/10.1145/3133956.3134015",
+    },
+    {
+      label: "Dobrowolski, W., Iwach-Kowalski, K., Nikodem, M., and Unold, O. Log-Based Fault Localization with Unsupervised Log Segmentation. Applied Sciences, 14, 8421, 2024.",
+      href: "https://doi.org/10.3390/app14188421",
+    },
+  ]}
+/>

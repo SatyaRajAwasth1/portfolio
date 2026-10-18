@@ -1,43 +1,62 @@
 ---
-title: "MCP Overview"
-description: "Lets learn about MCP together"
+title: "Model Context Protocol (MCP): An Overview"
+description: "What the Model Context Protocol is, how its host, client and server roles divide the work, and where it still falls short."
 date: "2025-05-30"
 tags: ["mcp", "ai", "eapd", "llm"]
-category: "Quick Overviews"
+format: "quick-overviews"
+status: "evolving"
 coverImage: "/images/react-speed.jpg"
 showTOC: false
 ---
 
-# Model Context Protocol (MCP) Overview
-
-The **Model Context Protocol (MCP)** is an open standard developed by Anthropic in November 2024 to standardize how AI models, particularly Large Language Models (LLMs), interact with external tools and data sources. Often compared to a "USB-C for AI," MCP simplifies integrations by providing a universal interface for seamless, secure, and scalable communication.[](https://www.anthropic.com/news/model-context-protocol)[](https://docs.anthropic.com/en/docs/agents-and-tools/mcp)
+The **Model Context Protocol (MCP)** is an open standard developed by Anthropic in November 2024 to standardize how AI models, particularly Large Language Models (LLMs), interact with external tools and data sources. Often compared to a "USB-C for AI," MCP simplifies integrations by providing a universal interface for seamless, secure, and scalable communication.<sup>[1](#ref-1)</sup><sup>[2](#ref-2)</sup>
 
 ## Key Components
-- **MCP Host**: The user-facing AI application (e.g., Claude Desktop, Cursor IDE) that interacts with users and coordinates data access.[](https://modelcontextprotocol.io/introduction)
-- **MCP Client**: Manages 1:1 connections between the host and servers, ensuring secure communication.[](https://techcommunity.microsoft.com/blog/azure-ai-services-blog/model-context-protocol-mcp-integrating-azure-openai-for-enhanced-tool-integratio/4393788)
-- **MCP Server**: Lightweight adapters exposing specific capabilities (tools, resources, prompts) from local or remote systems (e.g., GitHub, Slack, PostgreSQL).[](https://www.digitalocean.com/community/tutorials/model-context-protocol)
-- **Protocol**: Uses JSON-RPC 2.0 over STDIO (local) or HTTP+SSE (remote) for structured message exchange.[](https://modelcontextprotocol.io/docs/concepts/architecture)[](https://en.wikipedia.org/wiki/Model_Context_Protocol)
+- **MCP Host**: The user-facing AI application (e.g., Claude Desktop, Cursor IDE) that interacts with users and coordinates data access.<sup>[3](#ref-3)</sup>
+- **MCP Client**: Manages 1:1 connections between the host and servers, ensuring secure communication.<sup>[4](#ref-4)</sup>
+- **MCP Server**: Lightweight adapters exposing specific capabilities (tools, resources, prompts) from local or remote systems (e.g., GitHub, Slack, PostgreSQL).<sup>[5](#ref-5)</sup>
+- **Protocol**: Uses JSON-RPC 2.0 over STDIO (local) or HTTP+SSE (remote) for structured message exchange.<sup>[6](#ref-6)</sup><sup>[7](#ref-7)</sup>
 
 ## Core Features
-- **Tools**: Enable actions like executing code or sending messages.[](https://diamantai.substack.com/p/model-context-protocol-mcp-explained)
-- **Resources**: Provide read-only data access, like querying databases.[](https://www.philschmid.de/mcp-introduction)
-- **Prompts**: User-controlled templates for guiding LLM interactions.[](https://medium.com/%40nimritakoul01/the-model-context-protocol-mcp-a-complete-tutorial-a3abe8a7f4ef)
-- **Sampling**: Allows servers to request LLM completions, enhancing two-way communication.[](https://www.digitalocean.com/community/tutorials/model-context-protocol)
+- **Tools**: Enable actions like executing code or sending messages.<sup>[8](#ref-8)</sup>
+- **Resources**: Provide read-only data access, like querying databases.<sup>[9](#ref-9)</sup>
+- **Prompts**: User-controlled templates for guiding LLM interactions.<sup>[10](#ref-10)</sup>
+- **Sampling**: Allows servers to request LLM completions, enhancing two-way communication.<sup>[5](#ref-5)</sup>
 
 ## Benefits
-- **Standardization**: Reduces integration complexity from M×N to M+N, similar to the Language Server Protocol (LSP).[](https://www.digitalocean.com/community/tutorials/model-context-protocol)
-- **Flexibility**: Supports switching between AI models and tools without reconfiguration.[](https://norahsakal.com/blog/mcp-vs-api-model-context-protocol-explained/)
-- **Security**: Implements OAuth 2.1, PKCE, and granular permissions for secure access.[](https://auth0.com/blog/an-introduction-to-mcp-and-authorization/)
-- **Scalability**: Supports diverse transports (STDIO, HTTP+SSE) and a growing ecosystem of pre-built servers.[](https://www.datacamp.com/tutorial/mcp-model-context-protocol)
+- **Standardization**: Reduces integration complexity from M x N to M + N, similar to the Language Server Protocol (LSP).<sup>[5](#ref-5)</sup>
+- **Flexibility**: Supports switching between AI models and tools without reconfiguration.<sup>[11](#ref-11)</sup>
+- **Security**: Implements OAuth 2.1, PKCE, and granular permissions for secure access.<sup>[12](#ref-12)</sup>
+- **Scalability**: Supports diverse transports (STDIO, HTTP+SSE) and a growing ecosystem of pre-built servers.<sup>[13](#ref-13)</sup>
 
 ## Use Cases
-- **Software Development**: IDEs like Zed and Cursor use MCP for real-time code context and automation.[](https://www.anthropic.com/news/model-context-protocol)
-- **Business Automation**: Integrates with tools like Slack, Notion, and GitHub for workflow enhancement.[](https://www.datacamp.com/tutorial/mcp-model-context-protocol)
-- **Data Access**: Enables AI to query databases or fetch web data dynamically.[](https://diamantai.substack.com/p/model-context-protocol-mcp-explained)
+- **Software Development**: IDEs like Zed and Cursor use MCP for real-time code context and automation.<sup>[1](#ref-1)</sup>
+- **Business Automation**: Integrates with tools like Slack, Notion, and GitHub for workflow enhancement.<sup>[13](#ref-13)</sup>
+- **Data Access**: Enables AI to query databases or fetch web data dynamically.<sup>[8](#ref-8)</sup>
 
 ## Current State
-- **Adoption**: Supported by OpenAI, Google DeepMind, and tools like Replit and Sourcegraph.[](https://en.wikipedia.org/wiki/Model_Context_Protocol)
-- **Ecosystem**: Over 1,000 community-built servers and official integrations (e.g., Google Drive, Stripe).[](https://www.digitalocean.com/community/tutorials/model-context-protocol)
-- **Challenges**: Lacks standardized authentication, requiring custom solutions, and has a learning curve for setup.[](https://composio.dev/blog/what-is-model-context-protocol-mcp-explained/)[](https://huggingface.co/blog/Kseniase/mcp)
+- **Adoption**: Supported by OpenAI, Google DeepMind, and tools like Replit and Sourcegraph.<sup>[7](#ref-7)</sup>
+- **Ecosystem**: Over 1,000 community-built servers and official integrations (e.g., Google Drive, Stripe).<sup>[5](#ref-5)</sup>
+- **Challenges**: Lacks standardized authentication, requiring custom solutions, and has a learning curve for setup.<sup>[14](#ref-14)</sup><sup>[15](#ref-15)</sup>
 
-MCP is rapidly becoming a cornerstone for context-aware AI agents, transforming them from isolated chatbots to interoperable systems deeply integrated with real-world tools. For more details, visit [modelcontextprotocol.io](https://modelcontextprotocol.io).[](https://modelcontextprotocol.io/introduction)
+MCP is rapidly becoming a cornerstone for context-aware AI agents, transforming them from isolated chatbots to interoperable systems deeply integrated with real-world tools. For more details, visit [modelcontextprotocol.io](https://modelcontextprotocol.io).<sup>[3](#ref-3)</sup>
+
+<References
+  items={[
+    { label: "Anthropic. Introducing the Model Context Protocol. 2024.", href: "https://www.anthropic.com/news/model-context-protocol" },
+    { label: "Anthropic. Model Context Protocol (MCP), Claude documentation.", href: "https://docs.anthropic.com/en/docs/agents-and-tools/mcp" },
+    { label: "Model Context Protocol. Introduction.", href: "https://modelcontextprotocol.io/introduction" },
+    { label: "Microsoft Tech Community. Model Context Protocol (MCP): Integrating Azure OpenAI for Enhanced Tool Integration.", href: "https://techcommunity.microsoft.com/blog/azure-ai-services-blog/model-context-protocol-mcp-integrating-azure-openai-for-enhanced-tool-integratio/4393788" },
+    { label: "DigitalOcean. Model Context Protocol tutorial.", href: "https://www.digitalocean.com/community/tutorials/model-context-protocol" },
+    { label: "Model Context Protocol. Core architecture.", href: "https://modelcontextprotocol.io/docs/concepts/architecture" },
+    { label: "Wikipedia. Model Context Protocol.", href: "https://en.wikipedia.org/wiki/Model_Context_Protocol" },
+    { label: "DiamantAI. Model Context Protocol (MCP) Explained.", href: "https://diamantai.substack.com/p/model-context-protocol-mcp-explained" },
+    { label: "Schmid, P. Model Context Protocol (MCP): An Overview.", href: "https://www.philschmid.de/mcp-introduction" },
+    { label: "Koul, N. The Model Context Protocol (MCP): A Complete Tutorial. Medium.", href: "https://medium.com/%40nimritakoul01/the-model-context-protocol-mcp-a-complete-tutorial-a3abe8a7f4ef" },
+    { label: "Sakal, N. MCP vs API: Model Context Protocol Explained.", href: "https://norahsakal.com/blog/mcp-vs-api-model-context-protocol-explained/" },
+    { label: "Auth0. An Introduction to MCP and Authorization.", href: "https://auth0.com/blog/an-introduction-to-mcp-and-authorization/" },
+    { label: "DataCamp. Model Context Protocol (MCP): A Guide With Demo Project.", href: "https://www.datacamp.com/tutorial/mcp-model-context-protocol" },
+    { label: "Composio. What Is Model Context Protocol (MCP)? Explained.", href: "https://composio.dev/blog/what-is-model-context-protocol-mcp-explained/" },
+    { label: "Hugging Face. What Is MCP, and Why Is Everyone Talking About It?", href: "https://huggingface.co/blog/Kseniase/mcp" },
+  ]}
+/>

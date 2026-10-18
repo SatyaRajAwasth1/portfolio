@@ -1,0 +1,21 @@
+---
+// Breadcrumbs, title, and an optional one-line description, as on the writing, research, and projects pages.
+import Breadcrumbs from "./Breadcrumbs.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  breadcrumbs?: { label: string; href?: string }[];
+}
+
+const { title, description, breadcrumbs } = Astro.props;
+---
+
+<div>
+  {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
+  <header class:list={[breadcrumbs && "mt-6"]}>
+    <h1 class="text-3xl font-semibold tracking-[-0.025em]">{title}</h1>
+    {description && <p class="mt-2 max-w-[40rem] text-ink-2">{description}</p>}
+    <slot />
+  </header>
+</div>

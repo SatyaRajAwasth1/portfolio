@@ -1,0 +1,54 @@
+---
+import type { Project } from "../lib/content";
+import { formatDate, tagSlug } from "../lib/content";
+import { PROJECT_TYPES } from "../lib/taxonomy";
+
+interface Props {
+  projects: Project[];
+}
+
+const { projects } = Astro.props;
+---
+
+<ul class="grid divide-y divide-rule border-y border-rule">
+  {
+    projects.map((project) => {
+      const { title, summary, date, area, type, stack, tags, links } = project.data;
+      return (
+        <li class="grid gap-x-8 gap-y-1 py-6 sm:grid-cols-[6.5rem_minmax(0,1fr)]">
+          <time datetime={date} class="pt-0.5 text-sm text-ink-3 tabular-nums">
+            {formatDate(date, "month")}
+          </time>
+          <div class="min-w-0">
+            <h3 class="text-[1.0625rem] leading-snug font-medium">
+              <a href={`/projects/${project.slug}`} class="text-ink transition-colors hover:text-accent">{title}</a>
+            </h3>
+            <p class="mt-1 max-w-[46rem] text-[0.9375rem] text-ink-2">{summary}</p>
+            <p class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem]">
+              <span class="font-medium text-accent">{PROJECT_TYPES[type].label}</span>
+              <span class="text-ink-3/60" aria-hidden="true">/</span>
+              <span class="text-ink-2">{area}</span>
+              {stack.length > 0 && (
+                <>
+                  <span class="text-ink-3/60" aria-hidden="true">/</span>
+                  <span class="text-ink-3">{stack.join(", ")}</span>
+                </>
+              )}
+              {tags.length > 0 && <span class="text-ink-3/60" aria-hidden="true">/</span>}
+              {tags.map((tag) => (
+                <a href={`/tags/${tagSlug(tag)}`} class="text-ink-3 transition-colors hover:text-ink">#{tag}</a>
+              ))}
+            </p>
+            {(links.repo || links.paper || links.demo) && (
+              <p class="mt-2 flex flex-wrap gap-x-4 text-sm">
+                {links.repo && <a class="link" href={links.repo} target="_blank" rel="noopener">Source code</a>}
+                {links.paper && <a class="link" href={links.paper} target="_blank" rel="noopener">Paper</a>}
+                {links.demo && <a class="link" href={links.demo} target="_blank" rel="noopener">Demo</a>}
+              </p>
+            )}
+          </div>
+        </li>
+      );
+    })
+  }
+</ul>

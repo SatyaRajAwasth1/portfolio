@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { site } from "../site.config";
+import { formatDate } from "../lib/content";
+---
+
+<BaseLayout title="Now" description="What I am focused on at the moment.">
+  <div class="pt-10 pb-4 sm:pt-14">
+    <PageHeader breadcrumbs={[{ label: "About", href: "/about" }, { label: "Now" }]} title="What I am doing now">
+      <p class="mt-2 text-sm text-ink-3">
+        Updated <time datetime={site.now.updated}>{formatDate(site.now.updated)}</time>
+      </p>
+    </PageHeader>
+    <ul class="mt-8 grid list-disc gap-2.5 pl-5 text-[1.0625rem] text-ink-2 marker:text-ink-3">
+      {site.now.items.map((item) => <li>{item}</li>)}
+    </ul>
+    <p class="mt-10 text-sm text-ink-3">
+      This is a <a class="link" href="https://nownownow.com/about" target="_blank" rel="noopener">now page</a>,
+      updated whenever my focus shifts.
+    </p>
+  </div>
+</BaseLayout>
