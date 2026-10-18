@@ -8,7 +8,7 @@ const { items } = Astro.props;
 const trail = [{ label: "Home", href: "/" }, ...items];
 ---
 
-<nav aria-label="Breadcrumb">
+<nav aria-label="Breadcrumb" data-pagefind-ignore>
   <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-3">
     {
       trail.map((item, i) => (

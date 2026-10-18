@@ -50,6 +50,15 @@ export const site = {
     { label: "YouTube", href: "https://www.youtube.com/@SatyaRajAwasth1", icon: "youtube" },
   ],
 
+  // Comments on posts via Giscus (GitHub Discussions). Get these values from https://giscus.app
+  // after enabling Discussions on the repo and installing the Giscus app. Leave empty to hide comments.
+  giscus: {
+    repo: "SatyaRajAwasth1/portfolio",
+    repoId: "",
+    category: "",
+    categoryId: "",
+  },
+
   // Set these to a file in /public (e.g. "/cv/industry.pdf") to show download links on /about.
   cv: {
     industry: "",

@@ -21,9 +21,15 @@ const topTags = [...tagCounts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(
     <Breadcrumbs items={[{ label: "Writing" }]} />
 
     <header class="mt-6">
-      <h1 class="flex items-baseline gap-3 text-3xl font-semibold tracking-[-0.025em]">
-        Writing <span class="text-lg font-normal text-ink-3 tabular-nums">{posts.length}</span>
-      </h1>
+      <div class="flex flex-wrap items-baseline justify-between gap-4">
+        <h1 class="flex items-baseline gap-3 text-3xl font-semibold tracking-[-0.025em]">
+          Writing <span class="text-lg font-normal text-ink-3 tabular-nums">{posts.length}</span>
+        </h1>
+        <a href="/rss.xml" class="inline-flex items-center gap-1.5 text-sm text-ink-3 transition-colors hover:text-ink">
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16" /><circle cx="5" cy="19" r="1" fill="currentColor" /></svg>
+          RSS feed
+        </a>
+      </div>
       <p class="mt-2 max-w-[38rem] text-ink-2">
         Deep dives, overviews, opinions, and lessons from building software in production.
       </p>

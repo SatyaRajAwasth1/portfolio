@@ -27,7 +27,7 @@ const facts = [
 ---
 
 <BaseLayout title={title} description={summary} type="article">
-  <article class="max-w-[44rem] pt-10 pb-4 sm:pt-14">
+  <article class="max-w-[44rem] pt-10 pb-4 sm:pt-14" data-pagefind-body data-pagefind-meta={`type:${PROJECT_TYPES[type].label} project`}>
     <header>
       <Breadcrumbs items={[{ label: "Projects", href: "/projects" }, { label: PROJECT_TYPES[type].label }]} />
 
@@ -81,7 +81,7 @@ const facts = [
       <Content components={components} />
     </div>
 
-    <p class="mt-14 border-t border-rule pt-6">
+    <p class="mt-14 border-t border-rule pt-6" data-pagefind-ignore>
       <a href="/projects" class="link text-sm">All projects</a>
     </p>
   </article>

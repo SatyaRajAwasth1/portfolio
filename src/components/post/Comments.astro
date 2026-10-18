@@ -1,0 +1,72 @@
+---
+// Comments through Giscus (stored in GitHub Discussions). Renders nothing until `giscus` is filled in site.config.ts.
+import { site } from "../../site.config";
+
+const g = site.giscus;
+const enabled = Boolean(g.repo && g.repoId && g.category && g.categoryId);
+---
+
+{
+  enabled && (
+    <section class="mt-12 border-t border-rule pt-6" aria-label="Comments" data-pagefind-ignore>
+      <h2 class="text-lg font-semibold tracking-[-0.01em]">Comments</h2>
+      <p class="mt-1 text-sm text-ink-3">Sign in with GitHub to comment. Discussions are stored on GitHub.</p>
+      <div
+        class="giscus mt-6"
+        data-repo={g.repo}
+        data-repo-id={g.repoId}
+        data-category={g.category}
+        data-category-id={g.categoryId}
+      />
+    </section>
+  )
+}
+
+<script>
+  // Load Giscus only when the comments come near the screen, matching the site's light or dark theme.
+  const container = document.querySelector<HTMLElement>(".giscus");
+  const themeFor = () => (document.documentElement.dataset.theme === "dark" ? "dark" : "light");
+
+  function load() {
+    if (!container) return;
+    const s = document.createElement("script");
+    s.src = "https://giscus.app/client.js";
+    s.async = true;
+    s.crossOrigin = "anonymous";
+    const attrs: Record<string, string> = {
+      "data-repo": container.dataset.repo!,
+      "data-repo-id": container.dataset.repoId!,
+      "data-category": container.dataset.category!,
+      "data-category-id": container.dataset.categoryId!,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": themeFor(),
+      "data-lang": "en",
+      "data-loading": "lazy",
+    };
+    for (const [k, v] of Object.entries(attrs)) s.setAttribute(k, v);
+    container.appendChild(s);
+  }
+
+  if (container) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          io.disconnect();
+          load();
+        }
+      },
+      { rootMargin: "400px" },
+    );
+    io.observe(container);
+
+    // Keep Giscus in sync when the visitor switches the site theme.
+    new MutationObserver(() => {
+      const frame = document.querySelector<HTMLIFrameElement>("iframe.giscus-frame");
+      frame?.contentWindow?.postMessage({ giscus: { setConfig: { theme: themeFor() } } }, "https://giscus.app");
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  }
+</script>

@@ -3,6 +3,7 @@ import type { MarkdownHeading } from "astro";
 import TableOfContents from "../components/post/TableOfContents.astro";
 import SeriesNav from "../components/post/SeriesNav.astro";
 import ShareLinks from "../components/post/ShareLinks.astro";
+import Comments from "../components/post/Comments.astro";
 import Icon from "../components/Icon.astro";
 import Sep from "../components/Sep.astro";
 import { site } from "../site.config";
@@ -38,7 +39,7 @@ const nextPart = series.find((p) => p.data.series?.part === (currentPart ?? 0) +
 
 <!-- Text column starts at the same left edge as every other page; contents sit on the right. -->
 <article class="grid gap-x-16 pt-10 pb-4 sm:pt-14 xl:grid-cols-[minmax(0,44rem)_14rem] xl:justify-between">
-  <div class="min-w-0 max-w-[44rem]">
+  <div class="min-w-0 max-w-[44rem]" data-pagefind-body data-pagefind-meta={`type:${FORMATS[format].label}`}>
     <header>
       <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
         <Breadcrumbs items={[{ label: "Writing", href: "/writing" }, { label: FORMATS[format].label, href: `/writing?type=${format}` }]} />
@@ -84,7 +85,7 @@ const nextPart = series.find((p) => p.data.series?.part === (currentPart ?? 0) +
 
       {
         isResearch && (
-          <div id="cite" class="relative mt-4 rounded-lg border border-rule bg-paper-2 p-4" hidden>
+          <div id="cite" class="relative mt-4 rounded-lg border border-rule bg-paper-2 p-4" hidden data-pagefind-ignore>
             <p class="pr-24 text-sm text-ink-2">
               {lastName}, {initials} ({date.slice(0, 4)}). <i>{title}.</i> {new URL(site.url).host}.
             </p>
@@ -139,8 +140,9 @@ const nextPart = series.find((p) => p.data.series?.part === (currentPart ?? 0) +
     {series.length > 1 && <SeriesNav prev={prevPart} next={nextPart} />}
 
     <ShareLinks title={title} url={url} />
+    <Comments />
 
-    <nav class="mt-12 grid gap-3 sm:grid-cols-2" aria-label="More writing">
+    <nav class="mt-12 grid gap-3 sm:grid-cols-2" aria-label="More writing" data-pagefind-ignore>
       {
         older ? (
           <a href={`/writing/${older.slug}`} class="group rounded-lg border border-rule p-4 transition-colors hover:border-ink-3">

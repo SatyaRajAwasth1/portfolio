@@ -10,7 +10,7 @@ const x = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&ur
 const linkedin = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
 ---
 
-<section class="mt-12 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule pt-6 text-sm" aria-label="Share">
+<section class="mt-12 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule pt-6 text-sm" aria-label="Share" data-pagefind-ignore>
   <span class="text-ink-3">Share this post</span>
   <button type="button" class="link cursor-pointer" data-copy-link={url}>Copy link</button>
   <a class="link" href={x} target="_blank" rel="noopener noreferrer">X (Twitter)</a>

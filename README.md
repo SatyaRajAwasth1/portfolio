@@ -19,6 +19,14 @@ yarn build      # static site in ./dist
 | Colors and fonts (light and dark) | `src/styles/global.css` (top of file) |
 | Post types (formats) and statuses | `src/lib/taxonomy.ts` |
 
+## Built-in features
+
+- **RSS:** `/rss.xml` lists every published post.
+- **Social previews:** `src/pages/og` generates a 1200x630 image per post, project, and main page at build time.
+- **Search:** `yarn build` runs Pagefind after Astro and writes the index to `dist/pagefind`. Search only works on
+  the built site (`yarn build && yarn preview`), not in `yarn dev`.
+- **Comments:** Giscus, configured under `giscus` in `src/site.config.ts`. Comments stay hidden until the IDs are set.
+
 ## Adding content
 
 ```sh

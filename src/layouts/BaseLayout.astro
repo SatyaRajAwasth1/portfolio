@@ -11,7 +11,12 @@ interface Props {
   type?: "website" | "article";
 }
 
-const { title, description = site.description, image = site.avatar, type = "website" } = Astro.props;
+const { title, description = site.description, image, type = "website" } = Astro.props;
+
+// Generated social preview from src/pages/og, matched to this page's path; other pages use the default card.
+const pagePath = Astro.url.pathname.replace(/^\/|\/$/g, "");
+const ogPath = /^(writing|projects)(\/[^/]+)?$|^(research|about)$/.test(pagePath) ? pagePath : "default";
+const ogImage = image ?? `/og/${ogPath}.png`;
 const fullTitle = title && title !== site.name ? `${title} | ${site.name}` : site.name;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
 ---
@@ -25,13 +30,20 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href={site.avatar} />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name}: Writing`} href="/rss.xml" />
 
     <meta property="og:type" content={type} />
     <meta property="og:title" content={title ?? site.name} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(image, Astro.site ?? site.url)} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={new URL(ogImage, Astro.site ?? site.url)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content={site.name} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title ?? site.name} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site ?? site.url)} />
 
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)" />
